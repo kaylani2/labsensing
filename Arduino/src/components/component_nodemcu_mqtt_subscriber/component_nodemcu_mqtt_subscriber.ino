@@ -129,13 +129,7 @@ void setup ()
   myClient.setCallback (handleStringPayload);
   
   if (myClient.connect (CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD))
-  {
     Serial.println ("Connected to MQTT Broker.");
-    myClient.subscribe (MQTT_TOPIC);
-    Serial.print ("Subscribed to ");
-    Serial.print (MQTT_TOPIC);
-    Serial.println (".");
-  }
   else
     Serial.println ("Connection to MQTT Broker failed!");
   
@@ -144,22 +138,6 @@ void setup ()
 
 void loop ()
 {
-  if (myClient.connected ())
-  {
-    myClient.publish (MQTT_TOPIC, MQTT_MESSAGE);
-    Serial.println ("Message sent.");
-  }
-  else
-  {
-    Serial.println ("Lost connection. Trying again.");
-    myClient.connect (CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    delay (10); // This delay ensures that myClient.publish doesn't clash with the myClient.connect call
-    if (myClient.publish (MQTT_TOPIC, MQTT_MESSAGE))
-      Serial.println ("Connection recovered. Message sent.");
-    else
-      Serial.println ("Failed to send message");
-  }
-
   if (!myClient.connected ())
   {
     myClient.connect (CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
