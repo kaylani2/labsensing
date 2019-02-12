@@ -30,8 +30,6 @@ echo "password_file /etc/mosquitto/conf.d/passwd" | sudo tee -a mosquitto.conf
 echo "require_certificate false" | sudo tee -a mosquitto.conf
 ## Create a password file
 sudo touch passwd
-echo "Enter the new username (no spaces):"
-read myUsername
 ## This line will prompt you to input and confirm a new password
 sudo mosquitto_passwd -c /etc/mosquitto/conf.d/passwd $USER
 ## The broker will request the password after it has been restarted
