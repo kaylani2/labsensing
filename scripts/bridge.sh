@@ -6,6 +6,8 @@
 ## Network SSID: WIFI_SSID
 ## Network password: NETWORK_PASSWORD
 ## Change accordingly
+## If you're connected via ssh, make sure you're connected to the eth0 port.
+## If you try to run this while connected to wlan0 you'll have a bad time.
 
 
 ###################### RASPBERRY PI BRIDGE CONNECTION ###################### 
@@ -17,10 +19,12 @@ sudo sed -i '/^denyinterfaces wlan0/d' /etc/dhcpcd.conf
 sudo sed -i '/^denyinterfaces eth0/d' /etc/dhcpcd.conf
 echo "denyinterfaces wlan0" | sudo tee -a /etc/dhcpcd.conf
 echo "denyinterfaces eth0" | sudo tee -a /etc/dhcpcd.conf
+
 ## Add a new bridge called br0
 sudo brctl addbr br0
 ## Connect the network ports (eth0 to br0)
 sudo brctl addif br0 eth0
+
 
 sudo sed -i '/^# Bridge setup/d' /etc/network/interfaces
 sudo sed -i '/^auto br0/d' /etc/network/interfaces
@@ -31,12 +35,13 @@ echo "auto br0" | sudo tee -a /etc/network/interfaces
 echo "iface br0 inet manual" | sudo tee -a /etc/network/interfaces
 echo "bridge_ports eth0 wlan0" | sudo tee -a /etc/network/interfaces
 
+
 sudo rm /etc/hostapd/hostapd.conf
 sudo touch /etc/hostapd/hostapd.conf
 echo "interface=wlan0" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "bridge=br0" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "#driver=nl80211" | sudo tee -a /etc/hostapd/hostapd.conf
-echo "ssid=WIFI_SSID" | sudo tee -a /etc/hostapd/hostapd.conf
+echo "ssid=NETWORK_SSID" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "hw_mode=g" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "channel=7" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "wmm_enabled=0" | sudo tee -a /etc/hostapd/hostapd.conf
@@ -44,11 +49,12 @@ echo "macaddr_acl=0" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "auth_algs=1" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "ignore_broadcast_ssid=0" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "wpa=2" | sudo tee -a /etc/hostapd/hostapd.conf
-echo "wpa_passphrase=WIFI_PASSWORD" | sudo tee -a /etc/hostapd/hostapd.conf
+echo "wpa_passphrase=NETWORK_PASSWORD" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "wpa_key_mgmt=WPA-PSK" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "wpa_pairwise=TKIP" | sudo tee -a /etc/hostapd/hostapd.conf
 echo "rsn_pairwise=CCMP" | sudo tee -a /etc/hostapd/hostapd.conf
 
+## We still have to show the system the location of the configuration file:
 sudo sed -i 's/^#DAEMON_CONF=""/DAEMON_CONF="\/etc\/hostapd\/hostapd.conf"/g' /etc/default/hostapd
 
 ## Start remaining services
@@ -57,11 +63,16 @@ sudo systemctl start dnsmasq
 
 ## Enable ipv4 forwarding
 sudo sed -i 's/^#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
-
+## Next, we're going to add IP masquerading for outbound traffic on eth0
+## using iptables:
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 
+## To load the rule on boot, we need to edit the file /etc/rc.local
+##  and add the following:
 sudo sed -i '/^exit 0/d' /etc/rc.local
 sudo sed -i '/^iptables-restore < \/etc\/iptables.ipv4.nat/d' /etc/rc.local
 echo "iptables-restore < /etc/iptables.ipv4.nat" | sudo tee -a /etc/rc.local
 echo "exit 0" | sudo tee -a /etc/rc.local
+
+echo "Reboot now"
