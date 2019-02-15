@@ -4,12 +4,13 @@
  * Prints sensor details. Reads temperature and humidity from DHT22 and prints on the serial monitor. That's it.
  */
 
-// TODO: write a wrapper for the dht sensor
-// note: no support for floats by printf-like functions, must use dtostrf () instead
-
 
 // Other directives
 #define SERIAL_BAUD_RATE                          115200
+#define OK                                        0
+
+// Other global variables
+unsigned long previousMillis = 0;
 
 // Directives for the NodeMCU board
 #define D0                                        16
@@ -58,19 +59,17 @@
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
 #define DATA_STRING_LENGTH                      32
+#define ERROR_READING_TEMPERATURE               1
+#define ERROR_READING_HUMIDITY                  2
+
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 unsigned int delayMS;
 
 
-void setup ()
+void printSensorDetails (DHT_Unified myDht)
 {
-  Serial.begin (SERIAL_BAUD_RATE);
-
-  pinMode (BUILT_IN_LED, OUTPUT);
-
-  myDht.begin ();
   sensor_t sensor;
   myDht.temperature().getSensor(&sensor);
   Serial.println("------------------------------------");
@@ -92,47 +91,70 @@ void setup ()
   Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println("%");
   Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println("%");  
   Serial.println("------------------------------------");
-  // Set delay between sensor readings based on sensor details.
-  delayMS = sensor.min_delay / 1000;
 }
 
-void loop ()
+int getAndPrintAirTemperature (DHT_Unified myDht, String &stringAirTemperature)
 {
-  // The values are being converted to strings in order to facilitate handling later
-  char stringAirTemperature [DATA_STRING_LENGTH];
-  char stringAirHumidity [DATA_STRING_LENGTH];
   sensors_event_t myEvent;  
   
   myDht.temperature().getEvent(&myEvent);
   if (isnan(myEvent.temperature))
   {
     Serial.println ("Error reading temperature!");
-  }
-  else
-  {
-    float floatAirTemperature = (float) myEvent.temperature;
-    dtostrf (floatAirTemperature, 1, 2, stringAirTemperature);
-    Serial.print ("Temperature: ");
-    Serial.print (stringAirTemperature);
-    Serial.println (" *C");
+    return ERROR_READING_TEMPERATURE;
   }
   
+  float floatAirTemperature = (float) myEvent.temperature;
+  stringAirTemperature = String (floatAirTemperature, 3);
+  Serial.print ("Temperature: ");
+  Serial.print (stringAirTemperature);
+  Serial.println (" *C");
+  return OK;
+}
+
+int getAndPrintAirHumidity (DHT_Unified myDht, String &stringAirHumidity)
+{
+  sensors_event_t myEvent;  
+
   myDht.humidity().getEvent(&myEvent);
   if (isnan(myEvent.relative_humidity))
   {
-    Serial.println("Error reading humidity!");
-  }
-  else
-  {
-    float floatAirHumidity = (float) myEvent.relative_humidity;
-    dtostrf (floatAirHumidity, 1, 2, stringAirHumidity);
-    Serial.print ("Humidity: ");
-    Serial.print (stringAirHumidity);
-    Serial.println ("%");
+    Serial.println ("Error reading humidity!");
+    return ERROR_READING_HUMIDITY;
   }
   
+  float floatAirHumidity = (float) myEvent.relative_humidity;
+  stringAirHumidity = String (floatAirHumidity, 3);
+  Serial.print ("Humidity: ");
+  Serial.print (stringAirHumidity);
+  Serial.println ("%");
+  return OK;
+}
 
-  
-  digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
-  delay (delayMS);
+
+void setup ()
+{
+  Serial.begin (SERIAL_BAUD_RATE);
+  pinMode (BUILT_IN_LED, OUTPUT);
+  myDht.begin ();
+  printSensorDetails (myDht);
+  // Set delay between sensor readings based on sensor details.
+  sensor_t sensor;
+  delayMS = sensor.min_delay / 1000;
+}
+
+void loop ()
+{
+  // The values are being converted to strings in order to facilitate handling later
+  String stringAirTemperature;
+  String stringAirHumidity;
+  unsigned long currentMillis = millis ();
+
+  if (currentMillis - previousMillis >= delayMS)
+  {
+    previousMillis = currentMillis;
+    getAndPrintAirTemperature (myDht, stringAirTemperature);
+    getAndPrintAirHumidity (myDht, stringAirHumidity);  
+    digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
+  } 
 }
