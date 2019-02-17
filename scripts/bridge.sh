@@ -6,13 +6,16 @@
 ## Network SSID: WIFI_SSID
 ## Network password: NETWORK_PASSWORD
 ## Change accordingly
-## If you're connected via ssh, make sure you're connected to the eth0 port.
-## If you try to run this while connected to wlan0 you'll have a bad time.
+## The Pi will reboot and you can connect again after a few seconds
 
 
 ###################### RASPBERRY PI BRIDGE CONNECTION ###################### 
-sudo apt-get -y install hostapd bridge-utils dnsmasq
+echo "This script will reboot the system. Press ENTER to continue."
+read uselessBuffer
+
+sudo apt-get -y install hostapd bridge-utils #dnsmasq
 sudo systemctl stop hostapd
+
 ## Stop eth0 and wlan0 ports being allocated IP addresses by the DHCP client
 ## on the Raspberry Pi
 sudo sed -i '/^denyinterfaces wlan0/d' /etc/dhcpcd.conf
@@ -35,7 +38,7 @@ echo "auto br0" | sudo tee -a /etc/network/interfaces
 echo "iface br0 inet manual" | sudo tee -a /etc/network/interfaces
 echo "bridge_ports eth0 wlan0" | sudo tee -a /etc/network/interfaces
 
-
+## Configuring the access point host software (hostapd)
 sudo rm /etc/hostapd/hostapd.conf
 sudo touch /etc/hostapd/hostapd.conf
 echo "interface=wlan0" | sudo tee -a /etc/hostapd/hostapd.conf
@@ -58,8 +61,8 @@ echo "rsn_pairwise=CCMP" | sudo tee -a /etc/hostapd/hostapd.conf
 sudo sed -i 's/^#DAEMON_CONF=""/DAEMON_CONF="\/etc\/hostapd\/hostapd.conf"/g' /etc/default/hostapd
 
 ## Start remaining services
-sudo systemctl start hostapd
-sudo systemctl start dnsmasq
+#sudo systemctl start hostapd
+#sudo systemctl start dnsmasq
 
 ## Enable ipv4 forwarding
 sudo sed -i 's/^#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
@@ -69,10 +72,13 @@ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 
 ## To load the rule on boot, we need to edit the file /etc/rc.local
-##  and add the following:
+## and add the following:
 sudo sed -i '/^exit 0/d' /etc/rc.local
 sudo sed -i '/^iptables-restore < \/etc\/iptables.ipv4.nat/d' /etc/rc.local
 echo "iptables-restore < /etc/iptables.ipv4.nat" | sudo tee -a /etc/rc.local
 echo "exit 0" | sudo tee -a /etc/rc.local
 
-echo "Reboot now"
+## Make hostapd run on startup
+sudo systemctl enable hostapd
+
+sudo shutdown -r now
