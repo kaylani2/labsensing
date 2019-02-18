@@ -6,8 +6,8 @@
 ##################### MOSQUITTO SCRIPT ##################### 
 ## Install the broker and the clients
 ## We can get the latest version using:
-# sudo wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
-# sudo apt-key add mosquitto-repo.gpg.key
+sudo wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+sudo apt-key add mosquitto-repo.gpg.key
 # cd /etc/apt/sources.list.d/
 # sudo wget http://repo.mosquitto.org/debian/mosquitto-stretch.list
 sudo apt-get update
