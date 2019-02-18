@@ -9,9 +9,9 @@
 # sudo wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
 # sudo apt-key add mosquitto-repo.gpg.key
 # cd /etc/apt/sources.list.d/
-# sudo wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
-# sudo apt-get update
-sudo apt install -y mosquitto mosquitto-clients python-mosquitto
+# sudo wget http://repo.mosquitto.org/debian/mosquitto-stretch.list
+sudo apt-get update
+sudo apt install -y mosquitto mosquitto-clients
 ## Check mosquitto instalation
 # mosquitto -v
 ## If you get "Error: Address already in use", it's because mosquitto is already running. Everything is fine.## The MQTT broker is now operating on TCP port 1883
