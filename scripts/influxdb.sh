@@ -5,6 +5,7 @@
 sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 lsb_release -a # stretch in my case
 echo "deb https://repos.influxdata.com/debian stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+sudo apt-get update
 sudo apt-get install -y influxdb
 
 ## Assuming that node-red and npm are correctly installed
