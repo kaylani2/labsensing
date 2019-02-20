@@ -28,4 +28,13 @@ npm install node-red-contrib-influxdb
 #   SHOW FIELD KEYS
 #   SELECT * FROM <measurement>
 #   SELECT * FROM <measurement> LIMIT <limit>
-#  DROP MEASUREMENT <measurement>
+#   DROP MEASUREMENT <measurement>
+#   SHOW SERIES
+#   DELETE FROM <series>
+# du -sh /var/lib/influxdb/data/<db name> (get disk usage of influxdb)
+
+## From docs.influxdata.com:
+# Database names, measurements, tag keys, field keys, and tag values are stored only once and always as strings.
+# Only field values and timestamps are stored per-point.
+# Non-string values require approximately three bytes.
+# String values require variable space as determined by string compression.
