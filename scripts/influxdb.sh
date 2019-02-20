@@ -1,5 +1,6 @@
 ## Author: Kaylani Bochie
 ## kaylani2 AT hotmail DOT com
+## Written based on the official documentation
 
 ## https://gist.github.com/boseji/bb71910d43283a1b84ab200bcce43c26
 sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
@@ -16,7 +17,8 @@ npm install node-red-contrib-influxdb
 # https://docs.influxdata.com/influxdb/v1.7/query_language/database_management/
 # https://docs.influxdata.com/influxdb/v1.7/query_language/data_exploration/
 # https://docs.influxdata.com/influxdb/v1.7/concepts/crosswalk/
-## Useful commands
+
+## Useful commands:
 # CREATE USER <"user"> WITH PASSWORD <"password"> WITH ALL PRIVILEGES
 # SHOW DATABASES
 # CREATE DATABASE <database>
