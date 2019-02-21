@@ -55,7 +55,7 @@ unsigned long previousMillis = 0;
 #include <Adafruit_Sensor.h>
 #include <DHT_U.h>
 #include <DHT.h>
-#include <dht22Functions.h>
+#include <globalFunctions.h>
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
 
