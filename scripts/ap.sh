@@ -50,13 +50,13 @@ echo "iface eth0 inet dhcp" | sudo tee -a /etc/network/interfaces
 
 
 ## Now restart the dhcpcd daemon and set up the new wlan0 configuration:
-#sudo service dhcpcd restart
+sudo service dhcpcd restart
 
 ## Setup the DHCP server 
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig$(date +%Y%m%d%H%M%S) 
 sudo touch /etc/dnsmasq.conf 
 echo "interface=wlan0" | sudo tee -a /etc/dnsmasq.conf 
-echo "dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h" | sudo tee -a /etc/dnsmasq.conf 
+echo "dhcp-range=192.168.4.2,192.168.4.60,255.255.255.0,24h" | sudo tee -a /etc/dnsmasq.conf 
 
 
 ## Configuring the access point host software (hostapd):
