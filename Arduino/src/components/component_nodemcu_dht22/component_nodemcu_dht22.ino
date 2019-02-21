@@ -25,7 +25,6 @@ unsigned long previousMillis = 0;
 #define D9                                        3
 #define D10                                       1
 #define BUILT_IN_LED                              D4
-#define INDICATOR_LED                             D4
 
 
 /*  DHT22 pinout:
@@ -56,81 +55,14 @@ unsigned long previousMillis = 0;
 #include <Adafruit_Sensor.h>
 #include <DHT_U.h>
 #include <DHT.h>
+#include <dht22Functions.h>
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
-#define DATA_STRING_LENGTH                      32
-#define ERROR_READING_TEMPERATURE               1
-#define ERROR_READING_HUMIDITY                  2
 
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 unsigned int delayMS;
-
-
-void printSensorDetails (DHT_Unified myDht)
-{
-  sensor_t sensor;
-  myDht.temperature().getSensor(&sensor);
-  Serial.println("------------------------------------");
-  Serial.println("Temperature");
-  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
-  Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
-  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" *C");
-  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" *C");
-  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" *C");  
-  Serial.println("------------------------------------");
-  myDht.humidity().getSensor(&sensor);
-  Serial.println("------------------------------------");
-  Serial.println("Humidity");
-  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
-  Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
-  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println("%");
-  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println("%");
-  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println("%");  
-  Serial.println("------------------------------------");
-}
-
-int getAndPrintAirTemperature (DHT_Unified myDht, String &stringAirTemperature)
-{
-  sensors_event_t myEvent;  
-  
-  myDht.temperature().getEvent(&myEvent);
-  if (isnan(myEvent.temperature))
-  {
-    Serial.println ("Error reading temperature!");
-    return ERROR_READING_TEMPERATURE;
-  }
-  
-  float floatAirTemperature = (float) myEvent.temperature;
-  stringAirTemperature = String (floatAirTemperature, 3);
-  Serial.print ("Temperature: ");
-  Serial.print (stringAirTemperature);
-  Serial.println (" *C");
-  return OK;
-}
-
-int getAndPrintAirHumidity (DHT_Unified myDht, String &stringAirHumidity)
-{
-  sensors_event_t myEvent;  
-
-  myDht.humidity().getEvent(&myEvent);
-  if (isnan(myEvent.relative_humidity))
-  {
-    Serial.println ("Error reading humidity!");
-    return ERROR_READING_HUMIDITY;
-  }
-  
-  float floatAirHumidity = (float) myEvent.relative_humidity;
-  stringAirHumidity = String (floatAirHumidity, 3);
-  Serial.print ("Humidity: ");
-  Serial.print (stringAirHumidity);
-  Serial.println ("%");
-  return OK;
-}
-
 
 void setup ()
 {
@@ -145,7 +77,6 @@ void setup ()
 
 void loop ()
 {
-  // The values are being converted to strings in order to facilitate handling later
   String stringAirTemperature;
   String stringAirHumidity;
   unsigned long currentMillis = millis ();
@@ -153,8 +84,17 @@ void loop ()
   if (currentMillis - previousMillis >= delayMS)
   {
     previousMillis = currentMillis;
-    getAndPrintAirTemperature (myDht, stringAirTemperature);
-    getAndPrintAirHumidity (myDht, stringAirHumidity);  
+    if (!getAirTemperature (myDht, stringAirTemperature))
+    {
+      Serial.print ("Air temperature: ");
+      Serial.println (stringAirTemperature);
+    }
+    if (!getAirHumidity (myDht, stringAirHumidity))
+    {
+      Serial.print ("Air humidity: ");
+      Serial.println (stringAirHumidity);
+    }
+
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   } 
 }

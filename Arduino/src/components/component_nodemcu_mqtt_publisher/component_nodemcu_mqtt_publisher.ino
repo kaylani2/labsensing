@@ -1,15 +1,16 @@
 /*
  * Author: Kaylani Bochie
  * 
- * Connects to Wi-Fi network and publishes a message to a topic in a local MQTT broker. That's it.
+ * Connects to a Wi-Fi network and publishes a message to a topic in a local MQTT broker. That's it.
  *
  */
 
-// TODO: remove delay from loop
-// TODO: write a global function to (re)connect, publish, retry and print debug on serial
-
 // Other directives
 #define SERIAL_BAUD_RATE                        115200
+#define MY_DELAY                                5000 //ms
+
+// Other global variables
+unsigned long previousMillis = 0;
 
 // Directives for the NodeMCU board
 #define D0                                        16
@@ -24,7 +25,7 @@
 #define D9                                        3
 #define D10                                       1
 #define BUILT_IN_LED                              D4
-#define INDICATOR_LED                             D4
+
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>
@@ -41,6 +42,8 @@
 #define MQTT_PASSWORD               "MQTT_PASSWORD"
 #define CLIENT_ID                   "could_be_anything"
 #define MQTT_MESSAGE                "any_string"
+
+#include <globalFunctions.h>
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;
@@ -104,22 +107,12 @@ void setup ()
 
 void loop ()
 {
-  if (myClient.connected ())
-  {
-    myClient.publish (MQTT_TOPIC, MQTT_MESSAGE);
-    Serial.println ("Message sent.");
-  }
-  else
-  {
-    Serial.println ("Lost connection. Trying again.");
-    myClient.connect (CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    delay (10); // This delay ensures that myClient.publish doesn't clash with the myClient.connect call
-    if (myClient.publish (MQTT_TOPIC, MQTT_MESSAGE))
-      Serial.println ("Connection recovered. Message sent.");
-    else
-      Serial.println ("Failed to send message");
-  }
+  unsigned long currentMillis = millis ();
 
-  digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
-  delay (10000); // Don't keep bothering the broker
+  if (currentMillis - previousMillis >= MY_DELAY)
+  {
+    previousMillis = currentMillis;
+    publishToTopic (myClient, MQTT_TOPIC, MQTT_MESSAGE, CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
+  }
 }
