@@ -1,13 +1,24 @@
 /*
  * Author: Kaylani Bochie
  * 
+ * Node: av2
+ * Components:
+ *  DHT22
+ *  Door Sensor
+ *  MFRC522
+ *
+ * Note: The RFID Tag won't be read if the door is open.
+ * This behavior is a bug, however that restriction makes (some) sense
+ * for access control.
  */
 
-// TODO: add RFID
 
 // Other directives
 #define SERIAL_BAUD_RATE                          115200
 #define OK                                        0
+#define EVENT_DELAY                               2000 //ms
+// The delay is there to ensure that the node won't publish
+// a ton of messages whilst the door is open or a rfid tag is present
 
 // Other global variables
 unsigned long previousMillis = 0;
@@ -25,6 +36,33 @@ unsigned long previousMillis = 0;
 #define D9                                        3
 #define D10                                       1
 #define BUILT_IN_LED                              D4
+/* Circuit for the MFRC522:
+
+  Typical pin layout used:
+   ----------------------------------------------------------------------------------------------------
+               MFRC522       Arduino        NodeMCU    Arduino   Arduino    Arduino          Arduino
+               Reader/PCD    Uno/101        ESP8266    Mega      Nano v3    Leonardo/Micro   Pro Micro
+   Signal      Pin           Pin            Pin        Pin       Pin        Pin              Pin
+   ----------------------------------------------------------------------------------------------------
+   RST/Reset   RST           9              D3 [1]      5         D9         RESET/ICSP-5     RST
+   SPI SS      SDA(SS) [3]   10             D8 [2]      53        D10        10               10
+   SPI MOSI    MOSI          11 / ICSP-4    D7          51        D11        ICSP-4           16
+   SPI MISO    MISO          12 / ICSP-1    D6          50        D12        ICSP-1           14
+   SPI SCK     SCK           13 / ICSP-3    D5          52        D13        ICSP-3           15
+
+    [1] (1, 2) Configurable, typically defined as RST_PIN in sketch/program.
+    [2] (1, 2) Configurable, typically defined as SS_PIN in sketch/program.
+    [3] The SDA pin might be labeled SS on some/older MFRC522 boards
+*/
+// Directives for the MFRC522
+#include <SPI.h>
+#include <MFRC522.h>
+#define RESET_PIN                             D3
+#define SLAVE_SELECT_PIN                      D8
+
+// Global variables for the MFRC522
+MFRC522 myMfrc522 (SLAVE_SELECT_PIN, RESET_PIN);
+// This object will hold the ID that will be read
 
 /*  DHT22 pinout:
  *  
@@ -61,7 +99,12 @@ unsigned long previousMillis = 0;
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
-unsigned int delayMS;
+//unsigned int delayMS; // Won't be used in this sketch
+String stringAirTemperature = "";
+String stringAirHumidity = "";
+// These are global because if we detect a change in the door,
+// the node will publish the information and this allows it
+// to send the previous values
 
 // Gloval variables for the reed switch
 #define DOOR_SENSOR_PIN                       D2
@@ -78,11 +121,12 @@ unsigned int delayMS;
 #define MQTT_TEMPERATURE_TOPIC      "gta/av2/temp"
 #define MQTT_HUMIDITY_TOPIC         "gta/av2/hum"
 #define MQTT_DOOR_TOPIC             "gta/av2/door"
+#define MQTT_RFID_TOPIC             "gta/av2/rfid"
 #define MQTT_INFLUX_TOPIC           "gta/av2/influx"
 #define MQTT_USERNAME               "pi"
 #define MQTT_PASSWORD               "gta"
 #define CLIENT_ID                   "could_be_anything"
-#define MQTT_DELAY                  5000 //ms
+#define MQTT_DELAY                  5000 // ms
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;
@@ -141,8 +185,13 @@ void setup ()
   myDht.begin ();
   printSensorDetails (myDht);
   // Set delay between sensor readings based on sensor details.
-  sensor_t sensor;
-  delayMS = sensor.min_delay / 1000;
+  //sensor_t sensor;
+  //delayMS = sensor.min_delay / 1000;
+  // No need to use this delay in this sketch
+
+  // MFRC522 SETUP
+  SPI.begin ();
+  myMfrc522.PCD_Init ();
 
   // MQTT SETUP
   makeWifiConnection (NETWORK_SSID, NETWORK_PASSWORD);
@@ -156,41 +205,58 @@ void setup ()
 
 void loop ()
 {
-  String stringAirTemperature = "0";
-  String stringAirHumidity = "0";
   String stringDoorSensor = "CLOSED";
+  String stringRfidTag = "NO_ID";
   unsigned long currentMillis = millis ();
 
-  if (currentMillis - previousMillis >= MQTT_DELAY)
+  // if (read temp/hum) or (the door was opened) or (rfid tag is present)
+  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == LOW) || (myMfrc522.PICC_IsNewCardPresent ()) )
   {
     previousMillis = currentMillis;
-    if ( (!getAirTemperature (myDht, stringAirTemperature)) && (!getAirHumidity (myDht, stringAirHumidity)) )
-    {
-      if (digitalRead (DOOR_SENSOR_PIN) == LOW)
-        stringDoorSensor = "OPEN";
 
-      Serial.print ("Air temperature: ");
-      Serial.println (stringAirTemperature);
-      Serial.print ("Air humidity: ");
-      Serial.println (stringAirHumidity);
-      Serial.print ("The door is: ");
-      Serial.println (stringDoorSensor);
-      String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + "0";
-      Serial.print ("Inlux message: ");
-      Serial.println (influxMessage);
-      
-      
-      publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-      publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-      publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-      publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    Serial.println ("--------------------------------------");
+    if (myMfrc522.PICC_ReadCardSerial ())
+    {
+      byteArrayToString (myMfrc522.uid.uidByte, myMfrc522.uid.size, stringRfidTag);
+      Serial.print ("RFID: ");
+      Serial.println (stringRfidTag);
     }
-    else
-    {
-      Serial.println ("Error reading temperature or humidity.");
-      blinkRapidly (BUILT_IN_LED);
-    }    
 
+    // If there is an error on the reading, the strings
+    // will keep their previous values
+    getAirTemperature (myDht, stringAirTemperature);
+    getAirHumidity (myDht, stringAirHumidity);
+    if (digitalRead (DOOR_SENSOR_PIN) == LOW)
+    {
+      stringDoorSensor = "OPEN";
+      if (myMfrc522.PICC_ReadCardSerial ())
+      {
+        byteArrayToString (myMfrc522.uid.uidByte, myMfrc522.uid.size, stringRfidTag);
+        Serial.print ("RFID: ");
+        Serial.println (stringRfidTag);
+      }
+    }
+
+    Serial.print ("Air temperature: ");
+    Serial.println (stringAirTemperature);
+    Serial.print ("Air humidity: ");
+    Serial.println (stringAirHumidity);
+    Serial.print ("The door is: ");
+    Serial.println (stringDoorSensor);
+    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
+    Serial.print ("Inlux message: ");
+    Serial.println (influxMessage);
+    
+    publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    publishToTopic (myClient, MQTT_RFID_TOPIC, stringRfidTag.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+
+    Serial.println ("--------------------------------------");
+    // The condition was triggered by an event, not by time
+    if ( (stringRfidTag.equals ("NO_ID")) || (stringDoorSensor.equals ("CLOSED")) )
+      delay (EVENT_DELAY);
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   } 
 }
