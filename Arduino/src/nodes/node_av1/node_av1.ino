@@ -72,8 +72,8 @@ unsigned long previousMillis = 0;
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 //unsigned int delayMS; // Won't be used in this sketch
-String stringAirTemperature = "";
-String stringAirHumidity = "";
+String stringAirTemperature = "0";
+String stringAirHumidity = "0";
 // These are global because if we detect a change in the door,
 // the node will publish the information and this allows it
 // to send the previous values
@@ -168,7 +168,7 @@ void setup ()
   // No need to use this delay in this sketch
 
   // MQTT SETUP
-  makeWifiConnection (NETWORK_SSID, NETWORK_PASSWORD);
+  //makeWifiConnection (NETWORK_SSID, NETWORK_PASSWORD);
   if (myClient.connect (CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD))
     Serial.println ("Connected to MQTT Broker!");
   else

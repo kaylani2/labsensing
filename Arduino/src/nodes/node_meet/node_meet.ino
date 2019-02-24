@@ -60,7 +60,11 @@ unsigned long previousMillis = 0;
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
-unsigned int delayMS;
+String stringAirTemperature = "0";
+String stringAirHumidity = "0";
+// These are global because if we detect a change in the door,
+// the node will publish the information and this allows it
+// to send the previous values
 
 // Gloval variables for the PIR motion sensor
 #define MOTION_SENSOR_PIN                       D2
@@ -139,8 +143,9 @@ void setup ()
   myDht.begin ();
   printSensorDetails (myDht);
   // Set delay between sensor readings based on sensor details.
-  sensor_t sensor;
-  delayMS = sensor.min_delay / 1000;
+  //sensor_t sensor;
+  //delayMS = sensor.min_delay / 1000;
+  // No need to use this delay in this sketch
 
   // MQTT SETUP
   makeWifiConnection (NETWORK_SSID, NETWORK_PASSWORD);
@@ -154,8 +159,6 @@ void setup ()
 
 void loop ()
 {
-  String stringAirTemperature = "0";
-  String stringAirHumidity = "0";
   String stringMotionSensor = "NO";
   unsigned long currentMillis = millis ();
 
