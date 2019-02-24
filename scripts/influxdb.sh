@@ -1,6 +1,9 @@
 ## Author: Kaylani Bochie
 ## kaylani2 AT hotmail DOT com
 ## Written based on the official documentation
+##
+## Known issue when dropping measurements:
+## https://github.com/influxdata/influxdb/issues/10052
 
 ## https://gist.github.com/boseji/bb71910d43283a1b84ab200bcce43c26
 sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
