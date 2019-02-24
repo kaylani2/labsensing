@@ -100,8 +100,8 @@ MFRC522 myMfrc522 (SLAVE_SELECT_PIN, RESET_PIN);
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 //unsigned int delayMS; // Won't be used in this sketch
-String stringAirTemperature = "";
-String stringAirHumidity = "";
+String stringAirTemperature = "0";
+String stringAirHumidity = "0";
 // These are global because if we detect a change in the door,
 // the node will publish the information and this allows it
 // to send the previous values
@@ -227,15 +227,7 @@ void loop ()
     getAirTemperature (myDht, stringAirTemperature);
     getAirHumidity (myDht, stringAirHumidity);
     if (digitalRead (DOOR_SENSOR_PIN) == LOW)
-    {
       stringDoorSensor = "OPEN";
-      if (myMfrc522.PICC_ReadCardSerial ())
-      {
-        byteArrayToString (myMfrc522.uid.uidByte, myMfrc522.uid.size, stringRfidTag);
-        Serial.print ("RFID: ");
-        Serial.println (stringRfidTag);
-      }
-    }
 
     Serial.print ("Air temperature: ");
     Serial.println (stringAirTemperature);
@@ -255,7 +247,7 @@ void loop ()
 
     Serial.println ("--------------------------------------");
     // The condition was triggered by an event, not by time
-    if ( (stringRfidTag.equals ("NO_ID")) || (stringDoorSensor.equals ("CLOSED")) )
+    if ( (!stringRfidTag.equals ("NO_ID")) || (!stringDoorSensor.equals ("CLOSED")) )
       delay (EVENT_DELAY);
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   } 
