@@ -22,7 +22,6 @@
 #define D9                                        3
 #define D10                                       1
 #define BUILT_IN_LED                              D4
-#define INDICATOR_LED                             D4
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>

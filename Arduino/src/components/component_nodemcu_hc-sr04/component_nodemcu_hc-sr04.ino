@@ -23,7 +23,6 @@
 #define D9                                        3
 #define D10                                       1
 #define BUILT_IN_LED                              D4
-#define INDICATOR_LED                             D4
 
 
 // Directives for the HC-SR04
