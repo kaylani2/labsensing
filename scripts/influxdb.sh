@@ -1,6 +1,7 @@
 ## Author: Kaylani Bochie
 ## kaylani2 AT hotmail DOT com
 ## Written based on the official documentation
+## Target: Raspberry Pi running Stretch
 ##
 ## Known issue when dropping measurements:
 ## https://github.com/influxdata/influxdb/issues/10052
@@ -41,3 +42,9 @@ npm install node-red-contrib-influxdb
 # Only field values and timestamps are stored per-point.
 # Non-string values require approximately three bytes.
 # String values require variable space as determined by string compression.
+
+## For Debian installation: (24/02/19)
+## https://portal.influxdata.com/downloads/
+## The official version on the docs page is outdated
+# wget https://dl.influxdata.com/influxdb/releases/influxdb_1.7.4_amd64.deb
+# sudo dpkg -i influxdb_1.7.4_amd64.deb

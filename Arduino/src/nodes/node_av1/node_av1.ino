@@ -168,7 +168,7 @@ void setup ()
   // No need to use this delay in this sketch
 
   // MQTT SETUP
-  //makeWifiConnection (NETWORK_SSID, NETWORK_PASSWORD);
+  makeWifiConnection (NETWORK_SSID, NETWORK_PASSWORD);
   if (myClient.connect (CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD))
     Serial.println ("Connected to MQTT Broker!");
   else
