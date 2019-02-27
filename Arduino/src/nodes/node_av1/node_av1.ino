@@ -9,71 +9,27 @@
  *
  */
 
-// TODO: CHECK IF SMOKE SENSOR OUTPUTS HIGH OR LOW WHEN THERE IS SMOKE
-// CHANGE ON READ AND INPUT (OR USE AN INVERTER)
-
 // Other directives
+#include <globalFunctions.h> // Useful functions
+#include <gtaConfig.h> // Important macros
 #define SERIAL_BAUD_RATE                          115200
 #define OK                                        0
-#define EVENT_DELAY                               2000 //ms
-// The delay is there to ensure that the node won't publish
-// a ton of messages whilst the door is open
 
 // Other global variables
 unsigned long previousMillis = 0;
-
-// Directives for the NodeMCU board
-#define D0                                        16
-#define D1                                        5
-#define D2                                        4
-#define D3                                        0
-#define D4                                        2
-#define D5                                        14
-#define D6                                        12
-#define D7                                        13
-#define D8                                        15
-#define D9                                        3
-#define D10                                       1
-#define BUILT_IN_LED                              D4
-
-/*  DHT22 pinout:
- *  
- *  Pin 1 (VCC) -> Vcc
- *  Pin 2 (DATA) -> DHT_PIN
- *  Pin 3 (NC) -> FLOATING  
- *  Pin 4 (GND) -> Gnd
- *  10K resistor between DHT_PIN and Vcc
- *
- *
- *    --------------
- *      ||||||||||
- *    ||||||||||||||
- *    ||||||||||||||
- *      ||||||||||
- *    ||||||||||||||    
- *    --------------
- *    |   |   |   |
- *    |   |   |   |
- *    |   |   |   |
- *    VCC     NC
- *        DATA    GND
- */
- 
 
 // Directives for the DHT22 sensor
 #include <Adafruit_Sensor.h>
 #include <DHT_U.h>
 #include <DHT.h>
-#include <globalFunctions.h>
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
-
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 //unsigned int delayMS; // Won't be used in this sketch
-String stringAirTemperature = "0";
-String stringAirHumidity = "0";
+String stringAirTemperature = DHT_ERROR_STRING;
+String stringAirHumidity = DHT_ERROR_STRING;
 // These are global because if we detect a change in the door,
 // the node will publish the information and this allows it
 // to send the previous values
@@ -86,22 +42,15 @@ String stringAirHumidity = "0";
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>
-#define NETWORK_SSID                              "NETWORK_SSID"
-#define NETWORK_PASSWORD                          "NETWORK_PASSWORD"
 
 // Directives for the MQQT client
 #include <PubSubClient.h>
-#define MQTT_SERVER                 "192.168.25.10"
-#define MQTT_PORT                   1883 // standard port
-#define MQTT_TEMPERATURE_TOPIC      "gta/av1/temp"
-#define MQTT_HUMIDITY_TOPIC         "gta/av1/hum"
-#define MQTT_DOOR_TOPIC             "gta/av1/door"
-#define MQTT_SMOKE_TOPIC            "gta/av1/smoke"
-#define MQTT_INFLUX_TOPIC           "gta/av1/influx"
-#define MQTT_USERNAME               "pi"
-#define MQTT_PASSWORD               "gta"
-#define CLIENT_ID                   "could_be_anything"
-#define MQTT_DELAY                  5000 // ms
+#define MQTT_TEMPERATURE_TOPIC      AV1_MQTT_TEMPERATURE_TOPIC 
+#define MQTT_HUMIDITY_TOPIC         AV1_MQTT_HUMIDITY_TOPIC 
+#define MQTT_DOOR_TOPIC             AV1_MQTT_DOOR_TOPIC 
+#define MQTT_SMOKE_TOPIC            AV1_MQTT_SMOKE_TOPIC
+#define MQTT_INFLUX_TOPIC           AV1_MQTT_INFLUX_TOPIC
+#define CLIENT_ID                   AV1_CLIENT_ID
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;
@@ -157,7 +106,7 @@ void setup ()
   pinMode (DOOR_SENSOR_PIN, INPUT_PULLUP);
 
   // SMOKE SENSOR SETUP
-  pinMode (SMOKE_SENSOR_PIN, INPUT_PULLUP);
+  pinMode (SMOKE_SENSOR_PIN, INPUT);
 
   // DHT SENSOR SETUP
   myDht.begin ();
@@ -209,8 +158,10 @@ void loop ()
     Serial.print ("Inlux message: ");
     Serial.println (influxMessage);
     
-    publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    if (!stringAirTemperature.equals (DHT_ERROR_STRING)) 
+      publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    if (!stringAirHumidity.equals (DHT_ERROR_STRING)) 
+      publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_SMOKE_TOPIC, stringSmokeSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);

@@ -14,28 +14,14 @@
 
 
 // Other directives
+#include <globalFunctions.h> // Useful functions
+#include <gtaConfig.h> // Important macros
 #define SERIAL_BAUD_RATE                          115200
 #define OK                                        0
-#define EVENT_DELAY                               2000 //ms
-// The delay is there to ensure that the node won't publish
-// a ton of messages whilst the door is open or a rfid tag is present
 
 // Other global variables
 unsigned long previousMillis = 0;
 
-// Directives for the NodeMCU board
-#define D0                                        16
-#define D1                                        5
-#define D2                                        4
-#define D3                                        0
-#define D4                                        2
-#define D5                                        14
-#define D6                                        12
-#define D7                                        13
-#define D8                                        15
-#define D9                                        3
-#define D10                                       1
-#define BUILT_IN_LED                              D4
 /* Circuit for the MFRC522:
 
   Typical pin layout used:
@@ -92,16 +78,16 @@ MFRC522 myMfrc522 (SLAVE_SELECT_PIN, RESET_PIN);
 #include <Adafruit_Sensor.h>
 #include <DHT_U.h>
 #include <DHT.h>
-#include <globalFunctions.h>
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
+
 
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 //unsigned int delayMS; // Won't be used in this sketch
-String stringAirTemperature = "0";
-String stringAirHumidity = "0";
+String stringAirTemperature = DHT_ERROR_STRING;
+String stringAirHumidity = DHT_ERROR_STRING;
 // These are global because if we detect a change in the door,
 // the node will publish the information and this allows it
 // to send the previous values
@@ -111,22 +97,15 @@ String stringAirHumidity = "0";
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>
-#define NETWORK_SSID                              "NETWORK_SSID"
-#define NETWORK_PASSWORD                          "NETWORK_PASSWORD"
 
 // Directives for the MQQT client
 #include <PubSubClient.h>
-#define MQTT_SERVER                 "192.168.25.10"
-#define MQTT_PORT                   1883 // standard port
-#define MQTT_TEMPERATURE_TOPIC      "gta/av2/temp"
-#define MQTT_HUMIDITY_TOPIC         "gta/av2/hum"
-#define MQTT_DOOR_TOPIC             "gta/av2/door"
-#define MQTT_RFID_TOPIC             "gta/av2/rfid"
-#define MQTT_INFLUX_TOPIC           "gta/av2/influx"
-#define MQTT_USERNAME               "pi"
-#define MQTT_PASSWORD               "gta"
-#define CLIENT_ID                   "could_be_anything"
-#define MQTT_DELAY                  5000 // ms
+#define MQTT_TEMPERATURE_TOPIC      AV2_MQTT_TEMPERATURE_TOPIC
+#define MQTT_HUMIDITY_TOPIC         AV2_MQTT_HUMIDITY_TOPIC
+#define MQTT_DOOR_TOPIC             AV2_MQTT_DOOR_TOPIC
+#define MQTT_RFID_TOPIC             AV2_MQTT_RFID_TOPIC
+#define MQTT_INFLUX_TOPIC           AV2_MQTT_INFLUX_TOPIC
+#define CLIENT_ID                   AV2_CLIENT_ID
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;
@@ -209,7 +188,7 @@ void loop ()
   String stringRfidTag = "NO_ID";
   unsigned long currentMillis = millis ();
 
-  // if (read temp/hum) or (the door was opened) or (rfid tag is present)
+  // if (time goes by) or (the door was opened) or (rfid tag is present)
   if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == LOW) || (myMfrc522.PICC_IsNewCardPresent ()) )
   {
     previousMillis = currentMillis;
@@ -238,9 +217,11 @@ void loop ()
     String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
     Serial.print ("Inlux message: ");
     Serial.println (influxMessage);
-    
-    publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+  
+    if (!stringAirTemperature.equals (DHT_ERROR_STRING)) 
+      publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    if (!stringAirHumidity.equals (DHT_ERROR_STRING)) 
+      publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_RFID_TOPIC, stringRfidTag.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
