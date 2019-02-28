@@ -50,38 +50,12 @@ unsigned long previousMillis = 0;
 MFRC522 myMfrc522 (SLAVE_SELECT_PIN, RESET_PIN);
 // This object will hold the ID that will be read
 
-/*  DHT22 pinout:
- *  
- *  Pin 1 (VCC) -> Vcc
- *  Pin 2 (DATA) -> DHT_PIN
- *  Pin 3 (NC) -> FLOATING  
- *  Pin 4 (GND) -> Gnd
- *  10K resistor between DHT_PIN and Vcc
- *
- *
- *    --------------
- *      ||||||||||
- *    ||||||||||||||
- *    ||||||||||||||
- *      ||||||||||
- *    ||||||||||||||    
- *    --------------
- *    |   |   |   |
- *    |   |   |   |
- *    |   |   |   |
- *    VCC     NC
- *        DATA    GND
- */
- 
-
 // Directives for the DHT22 sensor
 #include <Adafruit_Sensor.h>
 #include <DHT_U.h>
 #include <DHT.h>
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
-
-
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
@@ -207,6 +181,7 @@ void loop ()
     getAirHumidity (myDht, stringAirHumidity);
     if (digitalRead (DOOR_SENSOR_PIN) == LOW)
       stringDoorSensor = "OPEN";
+    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
 
     Serial.print ("Air temperature: ");
     Serial.println (stringAirTemperature);
@@ -214,7 +189,6 @@ void loop ()
     Serial.println (stringAirHumidity);
     Serial.print ("The door is: ");
     Serial.println (stringDoorSensor);
-    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
     Serial.print ("Inlux message: ");
     Serial.println (influxMessage);
   

@@ -3,8 +3,9 @@
  * 
  * Node: meet
  * Components:
- * DHT22
- * PIR Motion Sensor
+ *  DHT22
+ *  PIR Motion Sensor
+ *
  */
 
 
@@ -23,7 +24,6 @@ unsigned long previousMillis = 0;
 #include <DHT.h>
 #define DHT_TYPE                                DHT22
 #define DHT_PIN                                 D1
-
 
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
@@ -122,10 +122,12 @@ void loop ()
   String stringMotionSensor = "NO";
   unsigned long currentMillis = millis ();
 
-  // if (time goes by) or (there is movement)
-  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (MOTION_SENSOR_PIN) == HIGH) )
+  if (currentMillis - previousMillis >= MQTT_DELAY)
   {
     previousMillis = currentMillis;
+
+    Serial.println ("--------------------------------------");
+
     // If there is an error on the reading, the strings
     // will keep their previous values
     getAirTemperature (myDht, stringAirTemperature);
@@ -149,6 +151,8 @@ void loop ()
       publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_MOVEMENT_TOPIC, stringMotionSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+
+    Serial.println ("--------------------------------------");
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   }
 }

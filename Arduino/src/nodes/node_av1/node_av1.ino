@@ -147,6 +147,7 @@ void loop ()
       stringDoorSensor = "OPEN";
     if (digitalRead (SMOKE_SENSOR_PIN) == LOW)
       stringSmokeSensor = "SMOKE";
+    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringSmokeSensor;
 
     Serial.print ("Air temperature: ");
     Serial.println (stringAirTemperature);
@@ -154,7 +155,6 @@ void loop ()
     Serial.println (stringAirHumidity);
     Serial.print ("The door is: ");
     Serial.println (stringDoorSensor);
-    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringSmokeSensor;
     Serial.print ("Inlux message: ");
     Serial.println (influxMessage);
     

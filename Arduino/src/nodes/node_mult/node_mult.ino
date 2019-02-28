@@ -1,6 +1,11 @@
 /*
  * Author: Kaylani Bochie
  * 
+ * Node: mult
+ * Components:
+ *  DHT22
+ *  PIR Motion Sensor
+ *
  */
 
 
@@ -129,6 +134,7 @@ void loop ()
     getAirHumidity (myDht, stringAirHumidity);
     if (digitalRead (MOTION_SENSOR_PIN) == HIGH)
       stringMotionSensor = "YES";
+    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringMotionSensor;
 
     Serial.print ("Air temperature: ");
     Serial.println (stringAirTemperature);
@@ -136,8 +142,7 @@ void loop ()
     Serial.println (stringAirHumidity);
     Serial.print ("There is movement: ");
     Serial.println (stringMotionSensor);
-    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringMotionSensor;
-    Serial.print ("Inlux message: ");
+    Serial.print ("Influx message: ");
     Serial.println (influxMessage);
     
     if (!stringAirTemperature.equals (DHT_ERROR_STRING)) 
