@@ -10,6 +10,10 @@
  * Note: The RFID Tag won't be read if the door is open.
  * This behavior is a bug, however that restriction makes (some) sense
  * for access control.
+ *
+ *
+ * This node will be used to benchmark the number of entries in the database.
+ * It will not send data periodically, it will send data when an event occurs
  */
 
 
@@ -60,14 +64,17 @@ MFRC522 myMfrc522 (SLAVE_SELECT_PIN, RESET_PIN);
 // Global variables for the DHT22 sensor
 DHT_Unified myDht (DHT_PIN, DHT_TYPE);
 //unsigned int delayMS; // Won't be used in this sketch
+int currentTemperature = 0;
+int previousTemperature = 0;
 String stringAirTemperature = DHT_ERROR_STRING;
 String stringAirHumidity = DHT_ERROR_STRING;
 // These are global because if we detect a change in the door,
 // the node will publish the information and this allows it
 // to send the previous values
 
-// Gloval variables for the reed switch
+// Global variables for the reed switch
 #define DOOR_SENSOR_PIN                       D2
+int previousDoorState = 0;
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>
@@ -153,6 +160,9 @@ void setup ()
   else
     Serial.println ("Connection to MQTT Broker failed!");
 
+  // DOOR SENSOR SETUP
+  previousDoorState = digitalRead (DOOR_SENSOR_PIN);
+
   Serial.println ("Setup finished.");
 }
 
@@ -162,10 +172,17 @@ void loop ()
   String stringRfidTag = "NO_ID";
   unsigned long currentMillis = millis ();
 
-  // if (time goes by) or (the door was opened) or (rfid tag is present)
-  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == LOW) || (myMfrc522.PICC_IsNewCardPresent ()) )
+  currentDoorState = digitalRead (DOOR_SENSOR_PIN);
+  currentTemperature = findAndPrintAirTemperature (myDht, stringAirTemperature);
+  getAndPrintAirHumidity (myDht, stringAirHumidity);
+  // (the door was opened) or (rfid tag is present) or (great change in temperature)
+  if ( (currentDoorState != previousDoorState)
+     || (myMfrc522.PICC_IsNewCardPresent ())
+     || (currentTemperature - previousTemperature >= TEMPERATURE_DIFFERENCE_THRESHOLD)
+     )
   {
-    previousMillis = currentMillis;
+    previousDoorState = currentDoorState;
+    previousTemperature = currentTemperature;
 
     Serial.println ("--------------------------------------");
     if (myMfrc522.PICC_ReadCardSerial ())
@@ -177,8 +194,6 @@ void loop ()
 
     // If there is an error on the reading, the strings
     // will keep their previous values
-    getAndPrintAirTemperature (myDht, stringAirTemperature);
-    getAndPrintAirHumidity (myDht, stringAirHumidity);
     if (digitalRead (DOOR_SENSOR_PIN) == LOW)
       stringDoorSensor = "OPEN";
     String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
@@ -201,9 +216,6 @@ void loop ()
     publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
 
     Serial.println ("--------------------------------------");
-    // The condition was triggered by an event, not by time
-    if ( (!stringRfidTag.equals ("NO_ID")) || (!stringDoorSensor.equals ("CLOSED")) )
-      delay (EVENT_DELAY);
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   } 
 }

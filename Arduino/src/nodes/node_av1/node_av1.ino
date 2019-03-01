@@ -5,7 +5,7 @@
  * Components:
  *  DHT22
  *  Door Sensor
- *  MQ-02
+ *  IR Fire Sensor
  *
  */
 
@@ -37,8 +37,8 @@ String stringAirHumidity = DHT_ERROR_STRING;
 // Gloval variables for the reed switch
 #define DOOR_SENSOR_PIN                       D2
 
-// Gloval variables for the smoke sensor
-#define SMOKE_SENSOR_PIN                      D6
+// Gloval variables for the fire sensor
+#define FIRE_SENSOR_PIN                      D6
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>
@@ -48,7 +48,7 @@ String stringAirHumidity = DHT_ERROR_STRING;
 #define MQTT_TEMPERATURE_TOPIC      AV1_MQTT_TEMPERATURE_TOPIC 
 #define MQTT_HUMIDITY_TOPIC         AV1_MQTT_HUMIDITY_TOPIC 
 #define MQTT_DOOR_TOPIC             AV1_MQTT_DOOR_TOPIC 
-#define MQTT_SMOKE_TOPIC            AV1_MQTT_SMOKE_TOPIC
+#define MQTT_FIRE_TOPIC             AV1_MQTT_FIRE_TOPIC
 #define MQTT_INFLUX_TOPIC           AV1_MQTT_INFLUX_TOPIC
 #define CLIENT_ID                   AV1_CLIENT_ID
 
@@ -105,8 +105,8 @@ void setup ()
   // DOOR SENSOR SETUP
   pinMode (DOOR_SENSOR_PIN, INPUT_PULLUP);
 
-  // SMOKE SENSOR SETUP
-  pinMode (SMOKE_SENSOR_PIN, INPUT);
+  // FIRE SENSOR SETUP
+  pinMode (FIRE_SENSOR_PIN, INPUT);
 
   // DHT SENSOR SETUP
   myDht.begin ();
@@ -129,11 +129,11 @@ void setup ()
 void loop ()
 {
   String stringDoorSensor = "CLOSED";
-  String stringSmokeSensor = "OK";
+  String stringFireSensor = "OK";
   unsigned long currentMillis = millis ();
 
-  // if (every few seconds) or (the door was opened) or (smoke is detected)
-  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == LOW) || (digitalRead (SMOKE_SENSOR_PIN) == LOW) ) 
+  // if (every few seconds) or (the door was opened) or (fire is detected)
+  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == HIGH) || (digitalRead (FIRE_SENSOR_PIN) == LOW) ) 
   {
     previousMillis = currentMillis;
 
@@ -141,13 +141,13 @@ void loop ()
 
     // If there is an error on the reading, the strings
     // will keep their previous values
-    getAirTemperature (myDht, stringAirTemperature);
-    getAirHumidity (myDht, stringAirHumidity);
-    if (digitalRead (DOOR_SENSOR_PIN) == LOW)
+    getAndPrintAirTemperature (myDht, stringAirTemperature);
+    getAndPrintAirHumidity (myDht, stringAirHumidity);
+    if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
       stringDoorSensor = "OPEN";
-    if (digitalRead (SMOKE_SENSOR_PIN) == LOW)
-      stringSmokeSensor = "SMOKE";
-    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringSmokeSensor;
+    if (digitalRead (FIRE_SENSOR_PIN) == LOW)
+      stringFireSensor = "FIRE";
+    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringFireSensor;
 
     Serial.print ("Air temperature: ");
     Serial.println (stringAirTemperature);
@@ -163,12 +163,12 @@ void loop ()
     if (!stringAirHumidity.equals (DHT_ERROR_STRING)) 
       publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    publishToTopic (myClient, MQTT_SMOKE_TOPIC, stringSmokeSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    publishToTopic (myClient, MQTT_FIRE_TOPIC, stringFireSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
 
     Serial.println ("--------------------------------------");
     // The condition was triggered by an event, not by time
-    if ( (!stringSmokeSensor.equals ("OK")) || (!stringDoorSensor.equals ("CLOSED")) )
+    if ( (!stringFireSensor.equals ("OK")) || (!stringDoorSensor.equals ("CLOSED")) )
       delay (EVENT_DELAY);
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   } 

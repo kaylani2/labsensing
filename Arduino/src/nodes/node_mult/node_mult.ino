@@ -130,8 +130,8 @@ void loop ()
 
     // If there is an error on the reading, the strings
     // will keep their previous values
-    getAirTemperature (myDht, stringAirTemperature);
-    getAirHumidity (myDht, stringAirHumidity);
+    getAndPrintAirTemperature (myDht, stringAirTemperature);
+    getAndPrintAirHumidity (myDht, stringAirHumidity);
     if (digitalRead (MOTION_SENSOR_PIN) == HIGH)
       stringMotionSensor = "YES";
     String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringMotionSensor;
