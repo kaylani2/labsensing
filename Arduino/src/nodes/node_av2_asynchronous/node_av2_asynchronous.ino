@@ -81,12 +81,12 @@ int previousDoorState = 0;
 
 // Directives for the MQQT client
 #include <PubSubClient.h>
-#define MQTT_TEMPERATURE_TOPIC      AV2_MQTT_TEMPERATURE_TOPIC
-#define MQTT_HUMIDITY_TOPIC         AV2_MQTT_HUMIDITY_TOPIC
-#define MQTT_DOOR_TOPIC             AV2_MQTT_DOOR_TOPIC
-#define MQTT_RFID_TOPIC             AV2_MQTT_RFID_TOPIC
-#define MQTT_INFLUX_TOPIC           AV2_MQTT_INFLUX_TOPIC
-#define CLIENT_ID                   AV2_CLIENT_ID
+#define MQTT_TEMPERATURE_TOPIC      AV2_ASYNC_MQTT_TEMPERATURE_TOPIC
+#define MQTT_HUMIDITY_TOPIC         AV2_ASYNC_MQTT_HUMIDITY_TOPIC
+#define MQTT_DOOR_TOPIC             AV2_ASYNC_MQTT_DOOR_TOPIC
+#define MQTT_RFID_TOPIC             AV2_ASYNC_MQTT_RFID_TOPIC
+#define MQTT_INFLUX_TOPIC           AV2_ASYNC_MQTT_INFLUX_TOPIC
+#define CLIENT_ID                   AV2_ASYNC_CLIENT_ID
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;
