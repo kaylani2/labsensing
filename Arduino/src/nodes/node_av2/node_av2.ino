@@ -162,8 +162,8 @@ void loop ()
   String stringRfidTag = "NO_ID";
   unsigned long currentMillis = millis ();
 
-  // if (time goes by) or (the door was opened) or (rfid tag is present)
-  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == LOW) || (myMfrc522.PICC_IsNewCardPresent ()) )
+  // if (time goes by) or (rfid tag is present)
+  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (myMfrc522.PICC_IsNewCardPresent ()) )
   {
     previousMillis = currentMillis;
 
@@ -179,7 +179,7 @@ void loop ()
     // will keep their previous values
     getAndPrintAirTemperature (myDht, stringAirTemperature);
     getAndPrintAirHumidity (myDht, stringAirHumidity);
-    if (digitalRead (DOOR_SENSOR_PIN) == LOW)
+    if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
       stringDoorSensor = "OPEN";
     String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
 
@@ -202,7 +202,7 @@ void loop ()
 
     Serial.println ("--------------------------------------");
     // The condition was triggered by an event, not by time
-    if ( (!stringRfidTag.equals ("NO_ID")) || (!stringDoorSensor.equals ("CLOSED")) )
+    if ( (!stringRfidTag.equals ("NO_ID")))
       delay (EVENT_DELAY);
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
   } 

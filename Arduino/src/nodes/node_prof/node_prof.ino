@@ -1,7 +1,7 @@
 /*
  * Author: Kaylani Bochie
  * 
- * Node: mult
+ * Node: prof
  * Components:
  *  DHT22
  *  PIR Motion Sensor
@@ -41,11 +41,11 @@ String stringAirHumidity = "0";
 
 // Directives for the MQQT client
 #include <PubSubClient.h>
-#define MQTT_TEMPERATURE_TOPIC      MULT_MQTT_TEMPERATURE_TOPIC
-#define MQTT_HUMIDITY_TOPIC         MULT_MQTT_HUMIDITY_TOPIC
-#define MQTT_MOVEMENT_TOPIC         MULT_MQTT_MOVEMENT_TOPIC
-#define MQTT_INFLUX_TOPIC           MULT_MQTT_INFLUX_TOPIC
-#define CLIENT_ID                   MULT_CLIENT_ID
+#define MQTT_TEMPERATURE_TOPIC      PROF_MQTT_TEMPERATURE_TOPIC
+#define MQTT_HUMIDITY_TOPIC         PROF_MQTT_HUMIDITY_TOPIC
+#define MQTT_MOVEMENT_TOPIC         PROF_MQTT_MOVEMENT_TOPIC
+#define MQTT_INFLUX_TOPIC           PROF_MQTT_INFLUX_TOPIC
+#define CLIENT_ID                   PROF_CLIENT_ID
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;

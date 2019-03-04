@@ -133,7 +133,7 @@ void loop ()
   unsigned long currentMillis = millis ();
 
   // if (every few seconds) or (the door was opened) or (fire is detected)
-  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == HIGH) || (digitalRead (FIRE_SENSOR_PIN) == LOW) ) 
+  if ( (currentMillis - previousMillis >= MQTT_DELAY) || (digitalRead (DOOR_SENSOR_PIN) == LOW) || (digitalRead (FIRE_SENSOR_PIN) == LOW) ) 
   {
     previousMillis = currentMillis;
 
@@ -143,7 +143,7 @@ void loop ()
     // will keep their previous values
     getAndPrintAirTemperature (myDht, stringAirTemperature);
     getAndPrintAirHumidity (myDht, stringAirHumidity);
-    if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
+    if (digitalRead (DOOR_SENSOR_PIN) == LOW)
       stringDoorSensor = "OPEN";
     if (digitalRead (FIRE_SENSOR_PIN) == LOW)
       stringFireSensor = "FIRE";

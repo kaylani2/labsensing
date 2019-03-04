@@ -75,6 +75,7 @@ String stringAirHumidity = DHT_ERROR_STRING;
 // Global variables for the reed switch
 #define DOOR_SENSOR_PIN                       D2
 int previousDoorState = 0;
+int currentDoorState = 0;
 
 // Directives for Wi-Fi on the esp8266
 #include <ESP8266WiFi.h>
@@ -162,6 +163,7 @@ void setup ()
 
   // DOOR SENSOR SETUP
   previousDoorState = digitalRead (DOOR_SENSOR_PIN);
+  currentDoorState = digitalRead (DOOR_SENSOR_PIN);
 
   Serial.println ("Setup finished.");
 }
@@ -169,11 +171,11 @@ void setup ()
 void loop ()
 {
   String stringDoorSensor = "CLOSED";
-  String stringRfidTag = "NO_ID";
+  String stringRfidTag = "NO_ID_00_00";
   unsigned long currentMillis = millis ();
 
   currentDoorState = digitalRead (DOOR_SENSOR_PIN);
-  currentTemperature = findAndPrintAirTemperature (myDht, stringAirTemperature);
+  currentTemperature = findAndPrintAirTemperature (myDht, stringAirTemperature, previousTemperature);
   getAndPrintAirHumidity (myDht, stringAirHumidity);
   // (the door was opened) or (rfid tag is present) or (great change in temperature)
   if ( (currentDoorState != previousDoorState)
@@ -194,8 +196,8 @@ void loop ()
 
     // If there is an error on the reading, the strings
     // will keep their previous values
-    if (digitalRead (DOOR_SENSOR_PIN) == LOW)
-      stringDoorSensor = "OPEN";
+    if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
+      stringDoorSensor = "_OPEN_";
     String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
 
     Serial.print ("Air temperature: ");
@@ -206,14 +208,14 @@ void loop ()
     Serial.println (stringDoorSensor);
     Serial.print ("Inlux message: ");
     Serial.println (influxMessage);
-  
+ /* 
     if (!stringAirTemperature.equals (DHT_ERROR_STRING)) 
       publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     if (!stringAirHumidity.equals (DHT_ERROR_STRING)) 
       publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_RFID_TOPIC, stringRfidTag.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+*/    publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
 
     Serial.println ("--------------------------------------");
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
