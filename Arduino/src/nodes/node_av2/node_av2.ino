@@ -159,7 +159,7 @@ void setup ()
 void loop ()
 {
   String stringDoorSensor = "CLOSED";
-  String stringRfidTag = "NO_ID";
+  String stringRfidTag = "NO_ID_00_00";
   unsigned long currentMillis = millis ();
 
   // if (time goes by) or (rfid tag is present)
@@ -180,7 +180,7 @@ void loop ()
     getAndPrintAirTemperature (myDht, stringAirTemperature);
     getAndPrintAirHumidity (myDht, stringAirHumidity);
     if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
-      stringDoorSensor = "OPEN";
+      stringDoorSensor = "_OPEN_";
     String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
 
     Serial.print ("Air temperature: ");
@@ -191,13 +191,15 @@ void loop ()
     Serial.println (stringDoorSensor);
     Serial.print ("Inlux message: ");
     Serial.println (influxMessage);
-  
+
+/* 
     if (!stringAirTemperature.equals (DHT_ERROR_STRING)) 
       publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     if (!stringAirHumidity.equals (DHT_ERROR_STRING)) 
       publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
     publishToTopic (myClient, MQTT_RFID_TOPIC, stringRfidTag.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+*/
     publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
 
     Serial.println ("--------------------------------------");
