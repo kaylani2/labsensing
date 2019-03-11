@@ -24,12 +24,15 @@ npm install node-red-contrib-influxdb
 
 ## Useful commands:
 # CREATE USER <"user"> WITH PASSWORD <"password"> WITH ALL PRIVILEGES
+# precision rfc3339 
+# /\ Shows time in human readable format
 # SHOW DATABASES
 # CREATE DATABASE <database>
 # DROP DATABASE <database>
 # USE <database>
 #   SHOW MEASUREMENTS
 #   SHOW FIELD KEYS
+#   INSERT <measurement> <field>=<value>, <otherField>=<otherValue>
 #   SELECT * FROM <measurement>
 #   SELECT * FROM <measurement> LIMIT <limit>
 #   DROP MEASUREMENT <measurement>
