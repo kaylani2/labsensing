@@ -1,4 +1,5 @@
 *.swp
-libraries
+libraries/
 gtaConfig.h
 globalFunctions.h
+globalFunctions.cpp
