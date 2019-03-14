@@ -172,15 +172,16 @@ void loop ()
 {
   String stringDoorSensor = "CLOSED";
   String stringRfidTag = "NO_ID_00_00";
-  unsigned long currentMillis = millis ();
+  float temperatureDifference = 0; // see abs () documentation
 
   currentDoorState = digitalRead (DOOR_SENSOR_PIN);
   currentTemperature = findAndPrintAirTemperature (myDht, stringAirTemperature, previousTemperature);
   getAndPrintAirHumidity (myDht, stringAirHumidity);
+  temperatureDifference = currentTemperature - previousTemperature;
   // (the door was opened) or (rfid tag is present) or (great change in temperature)
   if ( (currentDoorState != previousDoorState)
      || (myMfrc522.PICC_IsNewCardPresent ())
-     || (currentTemperature - previousTemperature >= TEMPERATURE_DIFFERENCE_THRESHOLD)
+     || (abs (temperatureDifference) >= TEMPERATURE_DIFFERENCE_THRESHOLD)
      )
   {
     previousDoorState = currentDoorState;
@@ -220,5 +221,8 @@ void loop ()
 
     Serial.println ("--------------------------------------");
     digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
+    // do note keep reading the card, give it some time
+    if ( (!stringRfidTag.equals ("NO_ID_00_00")))
+      delay (RFID_DELAY);
   } 
 }

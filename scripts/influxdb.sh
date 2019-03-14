@@ -39,6 +39,7 @@ npm install node-red-contrib-influxdb
 #   SHOW SERIES
 #   DELETE FROM <series>
 # du -sh /var/lib/influxdb/data/<db name> (get disk usage of influxdb)
+# curl -G 'http://127.0.0.1:8086/query?db=<DATABASE>' --data-urlencode "q=select * from <MEASUREMENT> where time > now() - 2d" > <OUTPUT_FILE>
 
 ## From docs.influxdata.com:
 # Database names, measurements, tag keys, field keys, and tag values are stored only once and always as strings.

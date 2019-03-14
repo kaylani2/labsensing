@@ -10,6 +10,12 @@
  * Note: The RFID Tag won't be read if the door is open.
  * This behavior is a bug, however that restriction makes (some) sense
  * for access control.
+ *
+ * Other note: The publish message is only successfully sent on the setup with deep sleep if you send it more than once.
+ * Absolutely no idea as to why.
+ *
+ * Description:
+ * This works the same way as node_av2.ino, but it enters deep sleep mode after publishing the information.
  */
 
 
@@ -20,7 +26,8 @@
 #define OK                                        0
 
 // Other global variables
-unsigned long previousMillis = 0;
+String stringDoorSensor = "CLOSED";
+String stringRfidTag = "NO_ID_00_00";
 
 /* Circuit for the MFRC522:
 
@@ -74,12 +81,12 @@ String stringAirHumidity = DHT_ERROR_STRING;
 
 // Directives for the MQQT client
 #include <PubSubClient.h>
-#define MQTT_TEMPERATURE_TOPIC      AV2_MQTT_TEMPERATURE_TOPIC
-#define MQTT_HUMIDITY_TOPIC         AV2_MQTT_HUMIDITY_TOPIC
-#define MQTT_DOOR_TOPIC             AV2_MQTT_DOOR_TOPIC
-#define MQTT_RFID_TOPIC             AV2_MQTT_RFID_TOPIC
-#define MQTT_INFLUX_TOPIC           AV2_MQTT_INFLUX_TOPIC
-#define CLIENT_ID                   AV2_CLIENT_ID
+#define MQTT_TEMPERATURE_TOPIC      AV2_SLEEP_MQTT_TEMPERATURE_TOPIC
+#define MQTT_HUMIDITY_TOPIC         AV2_SLEEP_MQTT_HUMIDITY_TOPIC
+#define MQTT_DOOR_TOPIC             AV2_SLEEP_MQTT_DOOR_TOPIC
+#define MQTT_RFID_TOPIC             AV2_SLEEP_MQTT_RFID_TOPIC
+#define MQTT_INFLUX_TOPIC           AV2_SLEEP_MQTT_INFLUX_TOPIC
+#define CLIENT_ID                   AV2_SLEEP_CLIENT_ID
 
 // Global variables for the PubSubClient
 WiFiClient myWifiClient;
@@ -154,59 +161,56 @@ void setup ()
     Serial.println ("Connection to MQTT Broker failed!");
 
   Serial.println ("Setup finished.");
+  // the dht22 would not work without delays in the code
+  Serial.println ("Delaying for the DHT22 Sensor.");
   delay (3000);
+
+
+  Serial.println ("Trying to connect, read sensors and publish message.");
+  Serial.println ("--------------------------------------");
+  if (myMfrc522.PICC_ReadCardSerial ())
+  {
+    byteArrayToString (myMfrc522.uid.uidByte, myMfrc522.uid.size, stringRfidTag);
+    Serial.print ("RFID: ");
+    Serial.println (stringRfidTag);
+  }
+
+  getAndPrintAirTemperature (myDht, stringAirTemperature);
+  getAndPrintAirHumidity (myDht, stringAirHumidity);
+  if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
+    stringDoorSensor = "_OPEN_";
+  String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
+
+  Serial.print ("Air temperature: ");
+  Serial.println (stringAirTemperature);
+  Serial.print ("Air humidity: ");
+  Serial.println (stringAirHumidity);
+  Serial.print ("The door is: ");
+  Serial.println (stringDoorSensor);
+  Serial.print ("Inlux message: ");
+  Serial.println (influxMessage);
+
+  if (stringAirHumidity.equals (DHT_ERROR_STRING))
+    Serial.println ("Error reading temperature and humidity. Message not sent.");
+  else
+  {
+    // see other note at the top
+    delay (100);
+    publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+    delay (100);
+    publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
+  }
+  
+  Serial.println ("--------------------------------------");
+  digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
+
+  Serial.println ();
+  Serial.print ("Entering deep sleep mode for ");
+  Serial.print (SLEEP_TIME);
+  Serial.println (" microseconds.");
+  ESP.deepSleep (SLEEP_TIME);
 }
 
 void loop ()
 {
-  String stringDoorSensor = "CLOSED";
-  String stringRfidTag = "NO_ID_00_00";
-  unsigned long currentMillis = millis ();
-
-  // if (time goes by) or (rfid tag is present)
-  if ( ((currentMillis - previousMillis) >= MQTT_DELAY))// || (myMfrc522.PICC_IsNewCardPresent ()) )
-  {
-    previousMillis = currentMillis;
-
-    Serial.println ("--------------------------------------");
-    if (myMfrc522.PICC_ReadCardSerial ())
-    {
-      byteArrayToString (myMfrc522.uid.uidByte, myMfrc522.uid.size, stringRfidTag);
-      Serial.print ("RFID: ");
-      Serial.println (stringRfidTag);
-    }
-
-    // If there is an error on the reading, the strings
-    // will keep their previous values
-    getAndPrintAirTemperature (myDht, stringAirTemperature);
-    getAndPrintAirHumidity (myDht, stringAirHumidity);
-    if (digitalRead (DOOR_SENSOR_PIN) == HIGH)
-      stringDoorSensor = "_OPEN_";
-    String influxMessage = stringAirTemperature + ";" + stringAirHumidity + ";" + stringDoorSensor + ";" + stringRfidTag;
-
-    Serial.print ("Air temperature: ");
-    Serial.println (stringAirTemperature);
-    Serial.print ("Air humidity: ");
-    Serial.println (stringAirHumidity);
-    Serial.print ("The door is: ");
-    Serial.println (stringDoorSensor);
-    Serial.print ("Inlux message: ");
-    Serial.println (influxMessage);
-
-/* 
-    if (!stringAirTemperature.equals (DHT_ERROR_STRING)) 
-      publishToTopic (myClient, MQTT_TEMPERATURE_TOPIC, stringAirTemperature.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    if (!stringAirHumidity.equals (DHT_ERROR_STRING)) 
-      publishToTopic (myClient, MQTT_HUMIDITY_TOPIC, stringAirHumidity.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    publishToTopic (myClient, MQTT_DOOR_TOPIC, stringDoorSensor.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-    publishToTopic (myClient, MQTT_RFID_TOPIC, stringRfidTag.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-*/
-    publishToTopic (myClient, MQTT_INFLUX_TOPIC, influxMessage.c_str (), CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD);
-
-    Serial.println ("--------------------------------------");
-    // The condition was triggered by an event, not by time
-    if ( (!stringRfidTag.equals ("NO_ID")))
-      delay (EVENT_DELAY);
-    digitalWrite (BUILT_IN_LED, !digitalRead (BUILT_IN_LED));
-  } 
 }
