@@ -3,8 +3,8 @@ libraries/
 gtaConfig.h
 globalFunctions.h
 globalFunctions.cpp
-arduinoDaySub.cpp
-arduinoDayPub.cpp
+arduinoDaySub.ino
+arduinoDayPub.ino
 arduinoDaySub/
 arduinoDayPub/
 *.gnu
