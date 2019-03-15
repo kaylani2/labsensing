@@ -7,3 +7,6 @@ arduinoDaySub.cpp
 arduinoDayPub.cpp
 arduinoDaySub/
 arduinoDayPub/
+*.gnu
+*.eps
+*2.txt
