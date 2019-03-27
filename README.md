@@ -23,4 +23,5 @@
 
 
 ## Dependencies and Configuration Files:
-  The global functions written for this system are kept in a separate repository to facilitate development on Windows and Linux. This is because the Arduino software is very picky about where you keep your libraries. This way you can clone this repository to your Arduino directory and clone the dependencies into your Arduino libraries' directory. The dependencies are currently maintained by @github/kaylani2. The repository is https://github.com/kaylani2/labsensingDependencies.
+  The global functions written for this system are kept in a separate repository to facilitate development on Windows and Linux. This is because the Arduino software is very picky about where you keep your libraries. This way you can clone this repository to your Arduino directory and clone the dependencies into your Arduino libraries' directory. The repository is https://github.com/kaylani2/labsensingDependencies.
+  The system also uses third party libraries, all of these can be installed with the library manager in the Arduino software. Every other dependency will be listed in this section with the associated download link and date.
