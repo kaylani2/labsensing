@@ -12,12 +12,12 @@ set timefmt "%Y/%m/%d_%H:%M:%S"
 #set termoption dash
 set output "teste.eps"
 set ylabel 'Temperatura (°Celsius)'
-set xlabel 'Tempo (horas:minutos:segundos)'
+set xlabel 'Tempo (horas:minutos)'
 set key left top box 
 #set key at 1.5,65
 #set yrange [0:2500]
 #set xrange [0:400]
 #set xtics 1
 
-plot 'async2.txt' using 1:2 with lp lt 1 pt 66 lw 1 lc rgb 'blue'  title 'Nó Assíncrono' , 'sleep2.txt' using 1:2 with p lt 2 pt 2 lw 1 lc rgb 'red' title 'Nó Síncrono'
+plot '../data/async2.txt' using 1:2 with lp lt 1 pt 66 lw 1 lc rgb 'blue'  title 'Nó Assíncrono' , '../data/sleep2.txt' using 1:2 with p lt 2 pt 2 lw 1 lc rgb 'red' title 'Nó Síncrono'
 
