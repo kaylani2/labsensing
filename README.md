@@ -9,3 +9,5 @@ Nodes:
 Scripts:
   Installation and useful commands.
   
+
+![Main Flow Used](images/flow.png?raw=true "Main flow used.")

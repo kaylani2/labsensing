@@ -1,0 +1,1363 @@
+[
+    {
+        "id": "3665987a.55a3f",
+        "type": "tab",
+        "label": "gta",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "cca4bb06.305538",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2sleep/temp",
+        "topic": "gta/av2sleep/temp",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 40,
+        "wires": [
+            [
+                "e09cc2be.d8b298"
+            ]
+        ]
+    },
+    {
+        "id": "3251a790.cb93b8",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2sleep/hum",
+        "topic": "gta/av2sleep/hum",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 80,
+        "wires": [
+            [
+                "e6eb1300.5a9cc8"
+            ]
+        ]
+    },
+    {
+        "id": "e09cc2be.d8b298",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "697e33f0.b301bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/av2sleep/temp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 910,
+        "y": 40,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "e6eb1300.5a9cc8",
+        "type": "ui_gauge",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "697e33f0.b301bc",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "gta/av2sleep/hum",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 910,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "c1f811da.99e48",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av1/temp",
+        "topic": "gta/av1/temp",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 40,
+        "wires": [
+            [
+                "d0964904.25a3e8"
+            ]
+        ]
+    },
+    {
+        "id": "42923108.517c4",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av1/hum",
+        "topic": "gta/av1/hum",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 80,
+        "wires": [
+            [
+                "fbd4d849.6fe7a"
+            ]
+        ]
+    },
+    {
+        "id": "93979325.f29958",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av1/smoke",
+        "topic": "gta/av1/smoke",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 100,
+        "y": 160,
+        "wires": [
+            [
+                "ff427e00.71aff"
+            ]
+        ]
+    },
+    {
+        "id": "d77b5003.cead98",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av1/door",
+        "topic": "gta/av1/door",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 120,
+        "wires": [
+            [
+                "3a58543e.96e60c"
+            ]
+        ]
+    },
+    {
+        "id": "d0964904.25a3e8",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "461cfe12.1c2988",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/av1/temp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 270,
+        "y": 40,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "fbd4d849.6fe7a",
+        "type": "ui_gauge",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "461cfe12.1c2988",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "gta/av1/hum",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 270,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "125deb4a.2f1235",
+        "type": "e-mail",
+        "z": "3665987a.55a3f",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "name": "mqttgta@gmail.com",
+        "dname": "",
+        "x": 480,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "fcdd6462.8c9648",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2sleep/door",
+        "topic": "gta/av2sleep/door",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 120,
+        "wires": [
+            [
+                "a8d76bea.869b5"
+            ]
+        ]
+    },
+    {
+        "id": "c5239aff.0f3bd8",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2sleep/rfid",
+        "topic": "gta/av2sleep/rfid",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 680,
+        "y": 160,
+        "wires": [
+            [
+                "f8e4be3c.4d7ae8"
+            ]
+        ]
+    },
+    {
+        "id": "413e1667.b3ae",
+        "type": "ui_text",
+        "z": "3665987a.55a3f",
+        "group": "697e33f0.b301bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "rfid",
+        "label": "rfid",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1050,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "8b70500c.9cee38",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/mult/temp",
+        "topic": "gta/mult/temp",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 520,
+        "wires": [
+            [
+                "6db0e243.2d3384"
+            ]
+        ]
+    },
+    {
+        "id": "9b21279e.ab846",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/mult/hum",
+        "topic": "gta/mult/hum",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 560,
+        "wires": [
+            [
+                "999dbb0f.c5907"
+            ]
+        ]
+    },
+    {
+        "id": "b85a40ba.ee597",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/mult/mov",
+        "topic": "gta/mult/mov",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 600,
+        "wires": [
+            [
+                "6341c9f5.4d954"
+            ]
+        ]
+    },
+    {
+        "id": "6db0e243.2d3384",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "b28cbc9b.92acc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/mult/temp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "999dbb0f.c5907",
+        "type": "ui_gauge",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "b28cbc9b.92acc",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "gta/mult/hum",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 270,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "6341c9f5.4d954",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "b28cbc9b.92acc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/mult/mov",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 270,
+        "y": 600,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "4b73c69e.1156f8",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/prof/temp",
+        "topic": "gta/prof/temp",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 280,
+        "wires": [
+            [
+                "4e7f6d8c.924a6c"
+            ]
+        ]
+    },
+    {
+        "id": "b2b1f1f.abe981",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/prof/hum",
+        "topic": "gta/prof/hum",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 320,
+        "wires": [
+            [
+                "c84ff474.f172c8"
+            ]
+        ]
+    },
+    {
+        "id": "8ee31aa2.51af",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/prof/door",
+        "topic": "gta/prof/door",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 360,
+        "wires": [
+            [
+                "e16cfa2b.e3b568"
+            ]
+        ]
+    },
+    {
+        "id": "a38a9baf.1e209",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av1/influx",
+        "topic": "gta/av1/influx",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 200,
+        "wires": [
+            [
+                "9b16ed2c.860608"
+            ]
+        ]
+    },
+    {
+        "id": "bcd96053.dca0e8",
+        "type": "influxdb out",
+        "z": "3665987a.55a3f",
+        "influxdb": "490b886.557fff8",
+        "name": "",
+        "measurement": "labsensing_av1",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 310,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "9b16ed2c.860608",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Parse message",
+        "func": "msg.payload = {\n    temp: parseFloat(msg.payload.split(\";\")[0]),\n    hum: parseFloat(msg.payload.split(\";\")[1]),\n    door: msg.payload.split(\";\")[2],\n    smoke: msg.payload.split(\";\")[3],\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 200,
+        "wires": [
+            [
+                "bcd96053.dca0e8"
+            ]
+        ]
+    },
+    {
+        "id": "7fe7e907.5aa6e8",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2sleep/influx",
+        "topic": "gta/av2sleep/influx",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 200,
+        "wires": [
+            [
+                "a3859146.3aec8"
+            ]
+        ]
+    },
+    {
+        "id": "a3859146.3aec8",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Parse message",
+        "func": "msg.payload = {\n    temp: parseFloat(msg.payload.split(\";\")[0]),\n    hum: parseFloat(msg.payload.split(\";\")[1]),\n    door: msg.payload.split(\";\")[2],\n    rfid: msg.payload.split(\";\")[3],\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 900,
+        "y": 200,
+        "wires": [
+            [
+                "b785e362.73483"
+            ]
+        ]
+    },
+    {
+        "id": "b785e362.73483",
+        "type": "influxdb out",
+        "z": "3665987a.55a3f",
+        "influxdb": "490b886.557fff8",
+        "name": "",
+        "measurement": "labsensing_sleep",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 900,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4e7f6d8c.924a6c",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "f18b6b74.3d58b8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/hall/temp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 270,
+        "y": 280,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "c84ff474.f172c8",
+        "type": "ui_gauge",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "f18b6b74.3d58b8",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "gta/hall/hum",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 270,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "1c50cbd4.34afec",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/prof/influx",
+        "topic": "gta/prof/influx",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 400,
+        "wires": [
+            [
+                "89eace5a.ac7f8"
+            ]
+        ]
+    },
+    {
+        "id": "89eace5a.ac7f8",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Parse message",
+        "func": "msg.payload = {\n    temp: parseFloat(msg.payload.split(\";\")[0]),\n    hum: parseFloat(msg.payload.split(\";\")[1]),\n    door: msg.payload.split(\";\")[2],\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 400,
+        "wires": [
+            [
+                "93a354dd.3655a8"
+            ]
+        ]
+    },
+    {
+        "id": "93a354dd.3655a8",
+        "type": "influxdb out",
+        "z": "3665987a.55a3f",
+        "influxdb": "490b886.557fff8",
+        "name": "",
+        "measurement": "labsensing_prof",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 320,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e451a1dd.6df14",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/mult/influx",
+        "topic": "gta/mult/influx",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 90,
+        "y": 640,
+        "wires": [
+            [
+                "7db064a6.411ee4"
+            ]
+        ]
+    },
+    {
+        "id": "7db064a6.411ee4",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Parse message",
+        "func": "msg.payload = {\n    temp: parseFloat(msg.payload.split(\";\")[0]),\n    hum: parseFloat(msg.payload.split(\";\")[1]),\n    mov: msg.payload.split(\";\")[2],\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 640,
+        "wires": [
+            [
+                "c2ebdaf8.4a938"
+            ]
+        ]
+    },
+    {
+        "id": "c2ebdaf8.4a938",
+        "type": "influxdb out",
+        "z": "3665987a.55a3f",
+        "influxdb": "490b886.557fff8",
+        "name": "",
+        "measurement": "MULT",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 280,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "2e76e426.3491e4",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/reuniao/temp",
+        "topic": "gta/reuniao/temp",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 500,
+        "y": 520,
+        "wires": [
+            [
+                "72309f5.2d1c36"
+            ]
+        ]
+    },
+    {
+        "id": "3ec2ef76.6b6a78",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/reuniao/hum",
+        "topic": "gta/reuniao/hum",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 500,
+        "y": 560,
+        "wires": [
+            [
+                "57aef0a5.b42"
+            ]
+        ]
+    },
+    {
+        "id": "fdd5cf5f.463c6",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/reuniao/mov",
+        "topic": "gta/reuniao/mov",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 500,
+        "y": 600,
+        "wires": [
+            [
+                "5455a4a8.4a43d4"
+            ]
+        ]
+    },
+    {
+        "id": "72309f5.2d1c36",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "c8e57e08.00e6a8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/reuniao/temp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 690,
+        "y": 520,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "57aef0a5.b42",
+        "type": "ui_gauge",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "c8e57e08.00e6a8",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "gta/reuniao/hum",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 680,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "5455a4a8.4a43d4",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "c8e57e08.00e6a8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/reuniao/mov",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 690,
+        "y": 600,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "9fcfd674.8807c",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/reuniao/influx",
+        "topic": "gta/reuniao/influx",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 499,
+        "y": 640,
+        "wires": [
+            [
+                "b7dc4b78.fe5e5"
+            ]
+        ]
+    },
+    {
+        "id": "b7dc4b78.fe5e5",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Parse message",
+        "func": "msg.payload = {\n    temp: parseFloat(msg.payload.split(\";\")[0]),\n    hum: parseFloat(msg.payload.split(\";\")[1]),\n    mov: msg.payload.split(\";\")[2],\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 699,
+        "y": 640,
+        "wires": [
+            [
+                "516b0eed.68f17"
+            ]
+        ]
+    },
+    {
+        "id": "516b0eed.68f17",
+        "type": "influxdb out",
+        "z": "3665987a.55a3f",
+        "influxdb": "490b886.557fff8",
+        "name": "",
+        "measurement": "MEET",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 690,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "a8d76bea.869b5",
+        "type": "ui_text",
+        "z": "3665987a.55a3f",
+        "group": "697e33f0.b301bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "gta/av2sleep/door",
+        "label": "gta/av2sleep/door",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 910,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "f8e4be3c.4d7ae8",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Filter RFID",
+        "func": "if (msg.payload == \"NO_ID\")\n    return null;\nreturn msg;\n\n/*\n * Only forward new UIDs. The dashboard will\n * display the last received UID.\n */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 160,
+        "wires": [
+            [
+                "413e1667.b3ae"
+            ]
+        ]
+    },
+    {
+        "id": "ff427e00.71aff",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Filter RFID",
+        "func": "if (msg.payload == \"OK\")\n    return null;\nreturn msg;\n\n/*\n * Only trigger email if something is wrong.\n */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 270,
+        "y": 160,
+        "wires": [
+            [
+                "125deb4a.2f1235"
+            ]
+        ]
+    },
+    {
+        "id": "3a58543e.96e60c",
+        "type": "ui_text",
+        "z": "3665987a.55a3f",
+        "group": "461cfe12.1c2988",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "gta/av1/door",
+        "label": "door",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 270,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "e16cfa2b.e3b568",
+        "type": "ui_text",
+        "z": "3665987a.55a3f",
+        "group": "f18b6b74.3d58b8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "gta/hall/door",
+        "label": "door",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 270,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "28a81645.97d732",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2async/temp",
+        "topic": "gta/av2async/temp",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 280,
+        "wires": [
+            [
+                "c7c9c884.21b45"
+            ]
+        ]
+    },
+    {
+        "id": "4bc868b4.19398",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2async/hum",
+        "topic": "gta/av2async/hum",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 320,
+        "wires": [
+            [
+                "cf366d71.33c178"
+            ]
+        ]
+    },
+    {
+        "id": "c7c9c884.21b45",
+        "type": "ui_chart",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "697e33f0.b301bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "gta/av2async/temp",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "x": 910,
+        "y": 280,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "cf366d71.33c178",
+        "type": "ui_gauge",
+        "z": "3665987a.55a3f",
+        "name": "",
+        "group": "697e33f0.b301bc",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "gta/av2async/hum",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 910,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c0285156.0290b8",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2async/door",
+        "topic": "gta/av2async/door",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 360,
+        "wires": [
+            [
+                "216ba54d.141cba"
+            ]
+        ]
+    },
+    {
+        "id": "a8cb22ca.964ba8",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2async/rfid",
+        "topic": "gta/av2async/rfid",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 680,
+        "y": 400,
+        "wires": [
+            [
+                "e390984f.01b55"
+            ]
+        ]
+    },
+    {
+        "id": "1f5bb869.08c768",
+        "type": "ui_text",
+        "z": "3665987a.55a3f",
+        "group": "697e33f0.b301bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "rfid",
+        "label": "rfid",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1060,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "52117944.0da498",
+        "type": "mqtt in",
+        "z": "3665987a.55a3f",
+        "name": "gta/av2async/influx",
+        "topic": "gta/av2async/influx",
+        "qos": "2",
+        "broker": "caf0304e.deaaa",
+        "x": 690,
+        "y": 440,
+        "wires": [
+            [
+                "5c397aa0.3f7204"
+            ]
+        ]
+    },
+    {
+        "id": "5c397aa0.3f7204",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Parse message",
+        "func": "msg.payload = {\n    temp: parseFloat(msg.payload.split(\";\")[0]),\n    hum: parseFloat(msg.payload.split(\";\")[1]),\n    door: msg.payload.split(\";\")[2],\n    rfid: msg.payload.split(\";\")[3],\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 910,
+        "y": 440,
+        "wires": [
+            [
+                "ac814b9d.d9b31"
+            ]
+        ]
+    },
+    {
+        "id": "ac814b9d.d9b31",
+        "type": "influxdb out",
+        "z": "3665987a.55a3f",
+        "influxdb": "490b886.557fff8",
+        "name": "",
+        "measurement": "labsensing_async",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 900,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "216ba54d.141cba",
+        "type": "ui_text",
+        "z": "3665987a.55a3f",
+        "group": "697e33f0.b301bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "gta/av2async/door",
+        "label": "gta/av2async/door",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 910,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e390984f.01b55",
+        "type": "function",
+        "z": "3665987a.55a3f",
+        "name": "Filter RFID",
+        "func": "if (msg.payload == \"NO_ID\")\n    return null;\nreturn msg;\n\n/*\n * Only forward new UIDs. The dashboard will\n * display the last received UID.\n */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 900,
+        "y": 400,
+        "wires": [
+            [
+                "1f5bb869.08c768"
+            ]
+        ]
+    },
+    {
+        "id": "caf0304e.deaaa",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "localhost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "697e33f0.b301bc",
+        "type": "ui_group",
+        "z": "",
+        "name": "av2",
+        "tab": "d5710f98.ed8be",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "461cfe12.1c2988",
+        "type": "ui_group",
+        "z": "",
+        "name": "av1",
+        "tab": "d5710f98.ed8be",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "b28cbc9b.92acc",
+        "type": "ui_group",
+        "z": "",
+        "name": "mult",
+        "tab": "d5710f98.ed8be",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "490b886.557fff8",
+        "type": "influxdb",
+        "z": "",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "gta",
+        "name": "",
+        "usetls": false,
+        "tls": ""
+    },
+    {
+        "id": "f18b6b74.3d58b8",
+        "type": "ui_group",
+        "z": "",
+        "name": "hall",
+        "tab": "d5710f98.ed8be",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "c8e57e08.00e6a8",
+        "type": "ui_group",
+        "z": "",
+        "name": "reuniao",
+        "tab": "d5710f98.ed8be",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "d5710f98.ed8be",
+        "type": "ui_tab",
+        "z": "",
+        "name": "gta",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
