@@ -11,6 +11,9 @@
 ### Scripts:
   Installation and useful commands.
 
+#### Computer Nodes:
+  Scripts to install and configure regular transmissions on regular machines (tested on Debian 9).
+
 ### Data:
   Just being used to fetch data from the server (which is positioned behind a firewall) without having to use multiple SCP commands.
 
