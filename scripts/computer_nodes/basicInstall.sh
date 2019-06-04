@@ -4,10 +4,12 @@
 ### Needs sshpass
 
 
-## TODO: script must clone the repo and install the new cron job
-INSTALL_CRON_JOB="(crontab -l 2>/dev/null; echo "0,10,20,30,40,50 * * * * cd ~/labsensing/scripts/computer_nodes/ ** bash smtpPublishers.sh >> ~/labsensing/scripts/computer_nodes/logs.txt 2>&1") | crontab -"
+## TODO: script must clone the repo and install the new cronjob
+## TODO: test to see if the cronjob is being installed properly
+INSTALL_CRONJOB='(crontab -l 2>/dev/null; echo "0,10,20,30,40,50 * * * * cd ~/labsensing/scripts/computer_nodes/ && bash smtpPublishers.sh >> ~/labsensing/scripts/computer_nodes/logs.txt 2>&1") | crontab -'
 TOUCH="touch it_werks"
-SCRIPT="cd ~/; git clone https://github.com/kaylani2/labsensing; cd labsensing/scripts/computer_nodes; $TOUCH;"
+SCRIPT="wall running scripts; cd ~/; rm -rf labsensing; git clone https://github.com/kaylani2/labsensing; cd labsensing/scripts/computer_nodes; $TOUCH;"
+CLEAN="cd ~/; rm -rf labsensing"
 HOSTS="ponte sepetiba"
 USERNAME="gta"
 
