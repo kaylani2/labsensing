@@ -1,6 +1,12 @@
+#!/bin/bash
+
+### This will be used to send workload information from each computer to the central node.
+### It uses mqtt to send the information, which will be parsed and written to the centralized database.
+### NOTE: This will not be the prefered method for sending information, instead we'll use netcat.
+
 free -h | grep Mem: > mem.txt
 mpstat | grep all > cpu.txt
-paste <(cat /sys/class/thermal/thermal_zone*/type) <(cat /sys/class/thermal/thermal_zone*/temp) | column -s $'\t' -t | sed 's/\(.\)..$/.\1°C/' > temp.txt
+paste <(cat /sys/class/thermal/thermal_zone*/type) <(cat /sys/class/thermal/thermal_zone*/temp) | column -s $'\t' -t | sed 's/\(.\)..$/.\C/' > temp.txt
 
 sed -i ':a;N;$!ba;s/\n/ /g' mem.txt # remove line feed
 sed -i 's/ \{1,\}/;/g' mem.txt
@@ -10,9 +16,7 @@ sed -i ':a;N;$!ba;s/\n/ /g' temp.txt # remove line feed
 sed -i 's/ \{1,\}/;/g' temp.txt
 
 myHostname=$(hostname)
-#echo $myHostname
-myHostName=(${myHostName//;/ })
-#echo $myHostname
+myHostname=(${myHostname//;/ })
 
 brokerIP=$(ping marechal -c 1 | grep PING)
 #echo $brokerIP
