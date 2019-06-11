@@ -1,7 +1,7 @@
 /*
  * Author: Kaylani Bochie
  * 
- * Node: threshold_batching
+ * Node: adaptative_batching
  * Components:
  *  DHT22
  *  Door Sensor
@@ -18,6 +18,11 @@
 // Other global variables
 unsigned long previousMillis = 0;
 unsigned long batchIndex = 0;
+float batchBuffer [BATCH_SIZE];
+float oldStandardDeviation;
+float newStandardDeviation;
+float oldThreshold;
+float newThreshold;
 
 // Directives for the DHT22 sensor
 #include <Adafruit_Sensor.h>
@@ -116,6 +121,9 @@ void setup ()
 
   Serial.println ("Setup finished.");
   delay (3000);
+
+  oldThreshold = TEMPERATURE_DIFFERENCE_THRESHOLD;
+  oldStandardDeviation = 0;
 }
 
 void loop ()
@@ -134,28 +142,8 @@ void loop ()
     // will keep their previous values
     String stringPreviousAirTemperature = stringAirTemperature; 
     findAndPrintAirTemperature (myDht, stringAirTemperature, stringPreviousAirTemperature.toInt ());
-    temperatureDifference = stringAirTemperature.toFloat () - stringPreviousAirTemperature.toFloat ();
-/*
-    Serial.print ("Previous temperature: ");
-    Serial.println (stringPreviousAirTemperature.toFloat ());
-    Serial.print ("Current temperature: ");
-    Serial.println (stringAirTemperature.toFloat ());
-    Serial.print ("Temperature difference: ");
-    Serial.println ((temperatureDifference));
-*/
-    if (temperatureDifference < 0)
-      temperatureDifference = - temperatureDifference;
-    // Fill batch
-    if (temperatureDifference >= TEMPERATURE_DIFFERENCE_THRESHOLD)
-    {
-      Serial.println ("Measure included in the batch.");
-      if (stringAirTemperatureFinal.length () == 0)
-        stringAirTemperatureFinal = stringAirTemperature;
-      else
-        stringAirTemperatureFinal = stringAirTemperatureFinal + "," + stringAirTemperature;
-    }
-    else
-      Serial.println ("Measure rejected.");
+    // Fill batch buffer
+    batchBuffer [batchIndex] = stringAirTemperature.toFloat ();
 
     Serial.print ("Air temperature: ");
     Serial.println (stringAirTemperature);
@@ -166,9 +154,33 @@ void loop ()
   // Send batch
   if ( ((currentMillis - previousMillis) >= BATCH_DELAY * BATCH_SIZE))
   {
-    // it's easier to parse in node-red if the javascript object is not null
-    if (stringAirTemperatureFinal.length () == 0)
-      stringAirTemperatureFinal = ",";
+    // First measurement is always included
+    stringAirTemperatureFinal = batchBuffer [0];
+    for (unsigned int index = 1; index < BATCH_SIZE; index++)
+    {
+      temperatureDifference = batchBuffer [index].toFloat () - batchBuffer [index - 1].toFloat ();
+      if (temperatureDifference < 0)
+        temperatureDifference = - temperatureDifference;
+      if ( (batchBuffer [index] - batchBuffer [index - 1]) >= oldThreshold )
+      {
+        Serial.println ("Measure included in the batch.");
+        stringAirTemperatureFinal = stringAirTemperatureFinal + "," + stringAirTemperature;
+      }
+      else
+        Serial.println ("Measure rejected.");
+    }
+
+    newStandardDeviation = getStandardDeviation (batchBuffer, BATCH_SIZE);
+    newThreshold = oldThreshold * (oldStandardDeviation - newStandardDeviation)
+    Serial.print ("New std. deviation: ");
+    Serial.println (newStandardDeviation);
+    Serial.print ("Old std. deviation: ");
+    Serial.println (oldStandardDeviation);
+    Serial.print ("New threshold ");
+    Serial.println (newThreshold);
+    Serial.print ("Old threshold ");
+    Serial.println (oldThreshold);
+
     batchIndex = 1;
     previousMillis = currentMillis;
     String influxMessage = stringAirTemperatureFinal;
