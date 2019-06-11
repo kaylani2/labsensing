@@ -158,7 +158,7 @@ void loop ()
     stringAirTemperatureFinal = batchBuffer [0];
     for (unsigned int index = 1; index < BATCH_SIZE; index++)
     {
-      temperatureDifference = batchBuffer [index].toFloat () - batchBuffer [index - 1].toFloat ();
+      temperatureDifference = batchBuffer [index] - batchBuffer [index - 1];
       if (temperatureDifference < 0)
         temperatureDifference = - temperatureDifference;
       if ( (batchBuffer [index] - batchBuffer [index - 1]) >= oldThreshold )
@@ -171,7 +171,7 @@ void loop ()
     }
 
     newStandardDeviation = getStandardDeviation (batchBuffer, BATCH_SIZE);
-    newThreshold = oldThreshold * (oldStandardDeviation - newStandardDeviation)
+    newThreshold = oldThreshold * (oldStandardDeviation - newStandardDeviation);
     Serial.print ("New std. deviation: ");
     Serial.println (newStandardDeviation);
     Serial.print ("Old std. deviation: ");
