@@ -4,12 +4,27 @@
 
 ### Components:
   Just the bare minimum.
-  
+
 ### Nodes:
   Actual implementations being used in our network.
-  
+
 ### Scripts:
   Installation and useful commands.
+## ap.sh
+  Setup the Raspberry Pi as an access point.
+## bridge.sh
+  Setup the Raspberry Pi as a bridge.
+## undoAp.sh
+  Undo what ap.sh does.
+## undoBridge.sh
+  Undo what bridge.sh does.
+## mosquitto.sh
+  Install the mosquitto broker and client.
+## influxdb.sh
+  Install influx db
+## temperatura.gnu
+  A simple example plotter.
+
 
 #### Computer Nodes:
   Scripts to install and configure regular transmissions on regular machines (tested on Debian 9).
@@ -18,7 +33,7 @@
   Just being used to fetch data from the server (which is positioned behind a firewall) without having to use multiple SCP commands.
 
 ### Flows:
-  Every new flow added to the current implementation will be put in this directory. 
+  Every new flow added to the current implementation will be put in this directory.
 
 
 #### Main flow used:
