@@ -14,3 +14,4 @@ data/*.gnu
 cpu.txt
 mem.txt
 temp.txt
+cpu_info.txt
