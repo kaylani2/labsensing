@@ -17,6 +17,7 @@ cat /proc/cpuinfo > cpu_info.txt
 lshw  > machine_info.txt ## this gives most of the info, parsing it should almost be enough
 lscpu > cpu_info_lscpu.txt ## may not be available in all machines
 lspci > pci.txt
+top -b -n 1 > top.txt
 ## \/ Get bios information
 #sudo dmidecode -t bios
 paste <(cat /sys/class/thermal/thermal_zone*/type) <(cat /sys/class/thermal/thermal_zone*/temp) | column -s $'\t' -t | sed 's/\(.\)..$/.\1C/' > temp.txt
