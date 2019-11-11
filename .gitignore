@@ -15,3 +15,7 @@ cpu.txt
 mem.txt
 temp.txt
 cpu_info.txt
+disk.txt
+pci.txt
+top.txt
+machine_info.txt
