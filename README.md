@@ -1,5 +1,21 @@
 # Labsensing
 
+## BibTeX:
+
+If you find this code useful in your research, please consider citing:
+
+Se este código foi útil para sua pesquisa, considere citar:
+
+```
+@article{bochie2019_labsensing,
+    author = {Bochie, K. and Campista, M. E. M},
+    journal = {II Workshop de Trabalhos de Iniciação Científica e de Graduação (WTG 2019)},
+    month = {May},
+    title = {{LabSensing}: Um Sistema de Sensoriamento para Laboratórios Científicos com Computação Inteligente nas Bordas},
+    year = {2019}
+}
+```
+
 ## Directories:
 
 ### Components:
